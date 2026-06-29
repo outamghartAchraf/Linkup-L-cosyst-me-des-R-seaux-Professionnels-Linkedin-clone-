@@ -11,3 +11,4 @@ Route::get('/register', [UserController::class, 'showRegistrationForm'])->name('
 Route::post('/register', [UserController::class, 'store'])->name('register.store');
 Route::get('/login', [UserController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [UserController::class, 'login'])->name('login.store');
+Route::post('/logout', [UserController::class, 'logout'])->name('logout');

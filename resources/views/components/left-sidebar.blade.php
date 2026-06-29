@@ -26,7 +26,15 @@
           <p class="font-semibold text-slate-900 text-base">@if (auth()->user())
             {{ Auth::user()->name }}
           @endif</p>
- 
+
+                    <a class="logout-link" href="{{ route('logout') }}"
+             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <i class="ti ti-logout text-xs text-slate-400"></i>
+          </a>
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+              @csrf
+          </form>
+
           <p class="mt-1 text-xs leading-normal text-slate-400 font-medium">Développeur Fullstack Laravel · React</p>
 
           <div class="mt-5 space-y-2 border-t border-slate-100 pt-4 text-xs">

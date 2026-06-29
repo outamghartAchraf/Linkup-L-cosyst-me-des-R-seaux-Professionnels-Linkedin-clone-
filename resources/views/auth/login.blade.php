@@ -210,7 +210,7 @@
                             type="email"
                             name="email"
                             value="{{ old('email') }}"
-                            required
+
                             autofocus
                             placeholder="jane@example.com"
                             class="w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
@@ -234,7 +234,7 @@
                         <input
                             type="password"
                             name="password"
-                            required
+                           
                             placeholder="••••••••"
                             class="w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
                         >
