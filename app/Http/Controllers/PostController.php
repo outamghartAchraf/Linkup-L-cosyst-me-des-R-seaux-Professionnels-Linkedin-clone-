@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use App\Models\Post;
 
@@ -11,20 +12,18 @@ class PostController extends Controller
     {
         $posts = Post::with('user')->latest()->get();
         return view('posts.index', compact('posts'));
-
     }
 
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $request->validate([
-            'content' => 'required|string|max:255',
+        Post::create([
+            'content' => $request->input('content'),
+            'user_id' => auth()->user()->id,
         ]);
-
-        $post = new Post();
-        $post->content = $request->input('content');
-        $post->user_id = auth()->user()->id;
-        $post->save();
 
         return redirect()->route('posts.index');
     }
+
+ 
+
 }
