@@ -42,5 +42,14 @@ class PostController extends Controller
         return redirect()->route('posts.index');
     }
 
+    public function destroy(Post $post)
+    {
+        abort_if($post->user_id !== auth()->id(), 403);
+
+        $post->delete();
+
+        return redirect()->route('posts.index');
+    }
+
 
 }
