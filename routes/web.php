@@ -8,3 +8,4 @@ Route::get('/', [PostController::class, 'index'])->name('posts.index');
 
 
 Route::get('/register', [UserController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [UserController::class, 'store'])->name('register.store');

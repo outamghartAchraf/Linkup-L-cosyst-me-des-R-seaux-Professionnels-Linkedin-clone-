@@ -146,29 +146,9 @@
                 </p>
             </div>
 
-            @if ($errors->any())
 
-                <div class="mb-5 rounded-2xl bg-red-50 border border-red-200 p-4 flex gap-3">
 
-                    <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                    </svg>
-
-                    <ul class="text-red-700 text-sm space-y-1">
-
-                        @foreach($errors->all() as $error)
-
-                            <li>{{ $error }}</li>
-
-                        @endforeach
-
-                    </ul>
-
-                </div>
-
-            @endif
-
-            <form method="POST" action=" " class="space-y-4">
+            <form method="POST" action="{{ route('register.store') }}" class="space-y-4">
 
                 @csrf
 
@@ -192,10 +172,14 @@
                                 value="{{ old('name') }}"
 
                                 placeholder="Jane Cooper"
-                                class="w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
+                                class="@error('name') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
                             >
-                        </div>
 
+
+                        </div>
+         @error('name')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                     </div>
 
                     <div>
@@ -216,10 +200,13 @@
                                 value="{{ old('email') }}"
 
                                 placeholder="jane@example.com"
-                                class="w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
+                                class="@error('email') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
                             >
-                        </div>
 
+                        </div>
+               @error('email')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                     </div>
 
                 </div>
@@ -244,10 +231,14 @@
                                 value="{{ old('headline') }}"
                                 placeholder="Full Stack Developer"
 
-                                class="w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
+                                class="@error('headline') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
                             >
+
                         </div>
 
+                                  @error('headline')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                     </div>
 
                 </div>
@@ -271,10 +262,13 @@
                                 name="password"
 
                                 placeholder="••••••••"
-                                class="w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
+                                class="@error('password') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
                             >
-                        </div>
 
+                        </div>
+                                @error('password')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                     </div>
 
                     <div>
@@ -292,11 +286,15 @@
                             <input
                                 type="password"
                                 name="password_confirmation"
-                                
+
                                 placeholder="••••••••"
-                                class="w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
+                                class="@error('password_confirmation') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
                             >
+
                         </div>
+                                  @error('password_confirmation')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
 
                     </div>
 
