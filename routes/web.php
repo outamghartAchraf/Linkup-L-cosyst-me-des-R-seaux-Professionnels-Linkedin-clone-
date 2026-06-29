@@ -20,6 +20,7 @@ Route::middleware('guest')->group(function () {
 });
 
 
+
 Route::middleware('auth')->group(function () {
 
     Route::get('/', [PostController::class, 'index'])
@@ -27,4 +28,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [UserController::class, 'logout'])
         ->name('logout');
+
+    Route::post('/posts', [PostController::class, 'store'])
+        ->name('posts.store');
 });

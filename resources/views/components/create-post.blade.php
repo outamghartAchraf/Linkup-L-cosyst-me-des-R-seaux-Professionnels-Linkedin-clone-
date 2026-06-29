@@ -1,6 +1,6 @@
  <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
 
-     <form action=" " method="POST">
+     <form action="{{ route('posts.store') }}" method="POST">
          @csrf
 
          <div class="flex items-start gap-3">
