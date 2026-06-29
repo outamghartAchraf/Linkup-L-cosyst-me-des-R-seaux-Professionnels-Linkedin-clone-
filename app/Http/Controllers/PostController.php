@@ -24,6 +24,12 @@ class PostController extends Controller
         return redirect()->route('posts.index');
     }
 
- 
+    public function edit(Post $post)
+    {
+        abort_if($post->user_id !== auth()->id(), 403);
+
+        return view('posts.edit', compact('post'));
+    }
+
 
 }
