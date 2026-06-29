@@ -6,8 +6,7 @@
         @auth
 
 
-
-            @if(auth()->user()->image_url)
+@if(auth()->user()->image_url)
 
 <img
     src="{{ asset('storage/'.auth()->user()->image_url) }}"
