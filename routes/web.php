@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/users/profile', [UserController::class, 'profile'])
     ->name('profile');
+    Route::get('/users/profile/edit', [UserController::class, 'edit'])
+    ->name('profile.edit');
     Route::put('/users/profile', [UserController::class, 'update'])
     ->name('profile.update');
 });

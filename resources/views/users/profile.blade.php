@@ -1,139 +1,133 @@
 @extends('layouts.app')
 
-@section('title','Edit Profile')
+@section('title', 'Profile')
 
 @section('content')
 
-<div class="rounded-2xl border border-slate-200 bg-white shadow-xs">
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
 
+        <div class="h-44 bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700"></div>
 
-    <div class="border-b border-slate-200 px-6 py-5">
+        <div class="px-6 pb-6">
 
-        <h1 class="text-lg font-bold text-slate-800">
-            Edit Profile
-        </h1>
+            <div class="-mt-16 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
 
-        <p class="mt-1 text-xs text-slate-400">
-            Update your professional information.
-        </p>
+                <div class="flex items-end gap-4">
 
-    </div>
+                    <div class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-blue-100 text-3xl font-bold text-blue-700 shadow">
+                        @if ($user->image_url)
+                            <img src="{{ asset('storage/' . $user->image_url) }}"
+                                class="w-32 h-32 rounded-full object-cover border-4 border-white shadow">
+                        @else
+                            <div class="flex h-32 w-32 items-center justify-center rounded-full bg-blue-100 text-3xl font-bold text-blue-700 border-4 border-white">
+                                {{ strtoupper(substr($user->name, 0, 2)) }}
+                            </div>
+                        @endif
+                    </div>
 
-    <form action="{{ route('profile.update') }}" method="POST" class="p-6"   enctype="multipart/form-data">
+                    <div class="flex flex-col gap-0.5 pb-1">
 
-        @csrf
-        @method('PUT')
+                        <h1 class="text-xl font-bold text-slate-900 leading-snug">
+                            {{ $user->name }}
+                        </h1>
 
-        <div class="space-y-6">
+                        <p class="text-xs font-medium text-slate-500">
+                            {{ $user->headline ?? 'No headline yet' }}
+                        </p>
 
-            <div>
+                        <p class="text-xs text-slate-400">
+                            {{ $user->company ?? 'No company' }}
+                        </p>
 
-    <label class="block mb-2 text-xs font-semibold text-slate-700">
-        Profile Photo
-    </label>
+                    </div>
 
-    @if($user->image_url)
+                </div>
 
-        <img
-            src="{{ asset('storage/'.$user->image_url) }}"
-            class="w-24 h-24 rounded-full object-cover mb-3 border">
+                <div>
 
-    @endif
+                    <a href="{{ route('profile.edit') }}"
+                        class="inline-flex items-center gap-2 rounded-xl border border-blue-600 px-5 py-2 text-xs font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">
 
-    <input
-        type="file"
-        name="image"
-        accept="image/*"
-        class="block w-full rounded-xl border border-slate-300 p-3 text-xs">
+                        <i class="ti ti-edit"></i>
 
-    @error('image')
-        <p class="text-red-500 text-xs mt-1">
-            {{ $message }}
-        </p>
-    @enderror
+                        Edit Profile
 
-</div>
+                    </a>
 
-            <div>
-
-                <label class="mb-2 block text-xs font-semibold text-slate-700">
-                    Full Name
-                </label>
-
-                <input
-                    type="text"
-                    name="name"
-                    value="{{ old('name',$user->name) }}"
-                    class="w-full rounded-xl border border-slate-300 px-4 py-3 text-xs outline-none focus:border-blue-500">
-
-                @error('name')
-                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                @enderror
+                </div>
 
             </div>
 
-            <div>
+            <div class="mt-8 grid grid-cols-3 gap-4">
 
-                <label class="mb-2 block text-xs font-semibold text-slate-700">
-                    Headline
-                </label>
+                <div class="rounded-xl bg-slate-50 p-4 text-center">
 
-                <input
-                    type="text"
-                    name="headline"
-                    value="{{ old('headline',$user->headline) }}"
-                    placeholder="Full Stack Developer"
-                    class="w-full rounded-xl border border-slate-300 px-4 py-3 text-xs outline-none focus:border-blue-500">
+                    <p class="text-xl font-bold text-slate-900">
+                        {{ $posts->count() }}
+                    </p>
 
-                @error('headline')
-                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                @enderror
+                    <p class="mt-1 text-xs text-slate-500">
+                        Posts
+                    </p>
+
+                </div>
+
+                <div class="rounded-xl bg-slate-50 p-4 text-center">
+
+                    <p class="text-xl font-bold text-slate-900">
+                        0
+                    </p>
+
+                    <p class="mt-1 text-xs text-slate-500">
+                        Connections
+                    </p>
+
+                </div>
+
+                <div class="rounded-xl bg-slate-50 p-4 text-center">
+
+                    <p class="text-xl font-bold text-slate-900">
+                        0
+                    </p>
+
+                    <p class="mt-1 text-xs text-slate-500">
+                        Followers
+                    </p>
+
+                </div>
 
             </div>
-
-            <div>
-
-                <label class="mb-2 block text-xs font-semibold text-slate-700">
-                    Company
-                </label>
-
-                <input
-                    type="text"
-                    name="company"
-                    value="{{ old('company',$user->company) }}"
-                    placeholder="Company"
-                    class="w-full rounded-xl border border-slate-300 px-4 py-3 text-xs outline-none focus:border-blue-500">
-
-                @error('company')
-                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                @enderror
-
-            </div>
-
-            
-
-        <div class="mt-8 flex justify-end gap-3">
-
-            <a
-                href="{{ route('profile') }}"
-                class="rounded-xl border border-slate-300 px-5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-100">
-
-                Cancel
-
-            </a>
-
-            <button
-                type="submit"
-                class="rounded-xl bg-blue-600 px-6 py-3 text-xs font-semibold text-white hover:bg-blue-700">
-
-                Save Changes
-
-            </button>
 
         </div>
 
-    </form>
+    </div>
 
-</div>
+    <div class="mt-5">
+
+        <h2 class="mb-4 text-sm font-bold text-slate-700">
+            Activity
+        </h2>
+
+        @forelse($posts as $post)
+            @include('components.post-card', ['post' => $post])
+
+        @empty
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-10 text-center">
+
+                <i class="ti ti-news text-5xl text-slate-300"></i>
+
+                <h3 class="mt-4 text-sm font-semibold text-slate-700">
+                    No posts yet
+                </h3>
+
+                <p class="mt-2 text-xs text-slate-400">
+                    Publish your first post to start sharing with your network.
+                </p>
+
+            </div>
+        @endforelse
+
+    </div>
 
 @endsection

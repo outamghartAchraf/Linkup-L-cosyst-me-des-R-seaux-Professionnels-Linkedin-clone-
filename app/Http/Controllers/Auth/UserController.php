@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -67,7 +68,49 @@ class UserController extends Controller
         return view('users.profile', compact('user', 'posts'));
     }
 
-    public function update(){
-        
+    public function edit()
+    {
+        $user = Auth::user();
+
+        return view('users.edit', compact('user'));
+    }
+
+
+    public function update(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'headline' => 'nullable|max:255',
+            'company' => 'nullable|max:255',
+
+            'image' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048'
+            ]
+        ]);
+
+        $user = auth()->user();
+
+        if ($request->hasFile('image')) {
+
+            if ($user->image_url) {
+
+                Storage::disk('public')->delete($user->image_url);
+            }
+
+            $validated['image_url'] = $request
+                ->file('image')
+                ->store('profiles', 'public');
+        }
+
+        unset($validated['image']);
+
+        $user->update($validated);
+
+        return redirect()
+            ->route('profile')
+            ->with('success', 'Profile updated successfully.');
     }
 }
