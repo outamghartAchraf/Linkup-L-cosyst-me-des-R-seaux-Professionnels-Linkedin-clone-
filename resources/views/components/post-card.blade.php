@@ -44,6 +44,7 @@
 
         {{-- Owner Menu --}}
         @if (auth()->id() === $post->user_id)
+        @can('update', $post)
             <div class="relative" x-data="{ open: false }">
                 <button @click="open=!open"
                     class="rounded-full p-1 text-slate-400 transition hover:bg-slate-50 hover:text-slate-600">
@@ -58,6 +59,8 @@
                         <i class="ti ti-edit text-base text-blue-600"></i>
                         Modifier
                     </a>
+                @endcan
+                @can('delete', $post)
 
                     <form action="{{ route('posts.destroy', $post) }}" method="POST"
                         onsubmit="return confirm('Delete this post?')">
@@ -70,6 +73,7 @@
                             Supprimer
                         </button>
                     </form>
+                @endcan
                 </div>
             </div>
         @endif
@@ -78,6 +82,13 @@
     <p class="text-xs leading-relaxed text-slate-700 font-normal mb-4">
         {{ $post->content }}
     </p>
+
+    @if ($post->image)
+    <img
+        src="{{ asset('storage/' . $post->image) }}"
+        alt="Post image"
+        class="mb-4 w-full rounded-xl object-cover">
+@endif
 
     <div class="mt-2 flex gap-1">
         <button
