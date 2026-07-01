@@ -53,12 +53,23 @@
                      </label>
                  </div>
 
-                 <button type="button"
-                     class="flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-sky-50 hover:text-sky-600">
-                     <i class="ti ti-video text-base text-sky-500"></i>
-                     Vidéo
-                 </button>
+<div class="flex items-center gap-2">
+    <input
+        type="file"
+        name="video"
+        id="video"
+        class="hidden"
+        accept="video/mp4,video/webm,video/ogg,video/quicktime">
 
+    <label
+        for="video"
+        class="cursor-pointer flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-sky-50 hover:text-sky-600">
+
+        <i class="ti ti-video text-base text-sky-500"></i>
+        Vidéo
+
+    </label>
+</div>
                  <button type="button"
                      class="flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-amber-50 hover:text-amber-600">
                      <i class="ti ti-file-text text-base text-amber-500"></i>

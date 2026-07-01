@@ -20,14 +20,21 @@ class PostController extends Controller
     public function store(PostRequest $request)
     {
         $imagePath = null;
+        $videoPath = null;
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('posts', 'public');
         }
 
+
+        if ($request->hasFile('video')) {
+            $videoPath = $request->file('video')->store('posts/videos', 'public');
+        }
+
         Post::create([
             'content' => $request->input('content'),
             'image' => $imagePath,
+            'video' => $videoPath,
             'user_id' => auth()->id(),
         ]);
 
@@ -42,30 +49,30 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
-public function update(PostRequest $request, Post $post)
-{
-    $this->authorize('update', $post);
+    public function update(PostRequest $request, Post $post)
+    {
+        $this->authorize('update', $post);
 
-    $data = [
-        'content' => $request->input('content'),
-    ];
+        $data = [
+            'content' => $request->input('content'),
+        ];
 
-    if ($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
 
 
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+
+            $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
-        $data['image'] = $request->file('image')->store('posts', 'public');
+        $post->update($data);
+
+        return redirect()
+            ->route('posts.index')
+            ->with('success', 'Post updated successfully.');
     }
-
-    $post->update($data);
-
-    return redirect()
-        ->route('posts.index')
-        ->with('success', 'Post updated successfully.');
-}
     public function destroy(Post $post)
     {
         $this->authorize('delete', $post);
