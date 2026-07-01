@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         $posts = Post::with('user')->latest()->get();
@@ -21,34 +23,32 @@ class PostController extends Controller
             'user_id' => auth()->user()->id,
         ]);
 
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }
 
     public function edit(Post $post)
     {
-        abort_if($post->user_id !== auth()->id(), 403);
 
         return view('posts.edit', compact('post'));
     }
 
     public function update(PostRequest $request, Post $post)
     {
-        abort_if($post->user_id !== auth()->id(), 403);
+        $this->authorize('update', $post);
 
         $post->update([
             'content' => $request->input('content'),
         ]);
 
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
 
     public function destroy(Post $post)
     {
-        abort_if($post->user_id !== auth()->id(), 403);
-
+        $this->authorize('delete', $post);
         $post->delete();
 
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
     }
 
 

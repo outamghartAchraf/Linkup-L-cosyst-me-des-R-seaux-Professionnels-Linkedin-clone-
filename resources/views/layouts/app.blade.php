@@ -21,6 +21,7 @@
 
     @include('layouts.nav')
 
+     @include('components.alert-message')
     <div
         class="mx-auto max-w-6xl grid grid-cols-1 gap-5 px-4 py-6 md:grid-cols-[240px_1fr] lg:grid-cols-[240px_1fr_260px]">
 
