@@ -113,4 +113,13 @@ class UserController extends Controller
             ->route('profile')
             ->with('success', 'Profile updated successfully.');
     }
+
+    public function show(User $user)
+    {
+        $posts = $user->posts()
+            ->latest()
+            ->get();
+
+        return view('users.show', compact('user', 'posts'));
+    }
 }

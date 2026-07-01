@@ -9,13 +9,13 @@
             class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100/70 font-semibold text-sm text-blue-700 ring-2 ring-blue-50">
 
             @if ($post->user->image_url)
-                <a href=" ">
+                <a href="{{ route('users.show', $post->user) }}">
 
                     <img src="{{ asset('storage/' . $post->user->image_url) }}" class="h-11 w-11 rounded-full object-cover">
 
                 </a>
             @else
-                <a href=" ">
+                <a href="{{ route('users.show', $post->user) }}">
 
                     <div
                         class="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-semibold">
@@ -30,7 +30,10 @@
         </div>
 
         <div class="flex-1">
-            <p class="text-sm font-semibold text-slate-900">{{ $post->user->name }}</p>
+            <a href="{{ route('users.show', $post->user) }}" >
+                <p class="text-sm font-semibold text-slate-900">{{ $post->user->name }}</p>
+            </a>
+
             <p class="text-xs font-medium text-slate-400 mt-0.5 leading-normal">{{ $post->user->headline }}</p>
             <p class="mt-1 flex items-center gap-1 text-[10px] font-medium text-slate-400">
                 <i class="ti ti-clock text-xs" aria-hidden="true"></i> {{ $post->created_at->diffForHumans() }}
