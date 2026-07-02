@@ -84,10 +84,13 @@
 
              </div>
 
-             <button type="submit"
-                 class="rounded-xl bg-blue-600 px-5 py-2 text-xs font-semibold text-white transition-all hover:bg-blue-700">
-                 Publier
-             </button>
+    <button
+    type="submit"
+    class="flex items-center justify-center rounded-xl bg-blue-600 p-2.5 text-white transition-all hover:bg-blue-700">
+
+    <i class="ti ti-send text-base"></i>
+
+</button>
 
          </div>
 
