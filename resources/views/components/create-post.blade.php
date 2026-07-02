@@ -1,6 +1,6 @@
  <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
 
-     <form action=" " method="POST">
+     <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
          @csrf
 
          <div class="flex items-start gap-3">
@@ -37,18 +37,39 @@
 
              <div class="flex flex-wrap gap-1">
 
-                 <button type="button"
+                 {{-- <button type="button"
                      class="flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-emerald-50 hover:text-emerald-600">
                      <i class="ti ti-photo text-base text-emerald-500"></i>
                      Photo
-                 </button>
+                 </button> --}}
 
-                 <button type="button"
-                     class="flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-sky-50 hover:text-sky-600">
-                     <i class="ti ti-video text-base text-sky-500"></i>
-                     Vidéo
-                 </button>
+                 <div class="flex items-center gap-2">
+                     <input type="file" name="image" id="image" class="hidden" accept="image/*">
 
+                     <label for="image"
+                         class="cursor-pointer flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-emerald-50 hover:text-emerald-600">
+                         <i class="ti ti-photo text-base text-emerald-500"></i>
+                         Photo
+                     </label>
+                 </div>
+
+<div class="flex items-center gap-2">
+    <input
+        type="file"
+        name="video"
+        id="video"
+        class="hidden"
+        accept="video/mp4,video/webm,video/ogg,video/quicktime">
+
+    <label
+        for="video"
+        class="cursor-pointer flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-sky-50 hover:text-sky-600">
+
+        <i class="ti ti-video text-base text-sky-500"></i>
+        Vidéo
+
+    </label>
+</div>
                  <button type="button"
                      class="flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-amber-50 hover:text-amber-600">
                      <i class="ti ti-file-text text-base text-amber-500"></i>
@@ -63,10 +84,13 @@
 
              </div>
 
-             <button type="submit"
-                 class="rounded-xl bg-blue-600 px-5 py-2 text-xs font-semibold text-white transition-all hover:bg-blue-700">
-                 Publier
-             </button>
+    <button
+    type="submit"
+    class="flex items-center justify-center rounded-xl bg-blue-600 p-2.5 text-white transition-all hover:bg-blue-700">
+
+    <i class="ti ti-send text-base"></i>
+
+</button>
 
          </div>
 
