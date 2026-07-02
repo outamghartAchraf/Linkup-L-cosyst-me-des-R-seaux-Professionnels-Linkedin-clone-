@@ -11,7 +11,8 @@
             @if ($post->user->image_url)
                 <a href="{{ route('users.show', $post->user) }}">
 
-                    <img src="{{ asset('storage/' . $post->user->image_url) }}" class="h-11 w-11 rounded-full object-cover">
+                    <img src="{{ asset('storage/' . $post->user->image_url) }}"
+                        class="h-11 w-11 rounded-full object-cover">
 
                 </a>
             @else
@@ -30,7 +31,7 @@
         </div>
 
         <div class="flex-1">
-            <a href="{{ route('users.show', $post->user) }}" >
+            <a href="{{ route('users.show', $post->user) }}">
                 <p class="text-sm font-semibold text-slate-900">{{ $post->user->name }}</p>
             </a>
 
@@ -92,21 +93,21 @@
     @endif
 
 
-        <div class="mb-2 flex items-center justify-between border-b border-slate-100 pb-2 text-[11px] font-medium text-slate-500">
+    <div
+        class="mb-2 flex items-center justify-between border-b border-slate-100 pb-2 text-[11px] font-medium text-slate-500">
 
         <div>
 
-            @if($post->likes->count())
-
-              {{ $post->likes->count() }}
+            @if ($post->likes->count())
+                {{ $post->likes->count() }}
                 {{ Str::plural('Like', $post->likes->count()) }}
-
             @endif
 
         </div>
 
         <div>
-            5 Commentaires
+            {{ $post->comments->count() }}
+            {{ Str::plural('Comment', $post->comments->count()) }}
         </div>
 
 
@@ -115,46 +116,183 @@
     <div class="mt-2 flex gap-1">
 
         {{-- Like --}}
-        <form
-            action="{{ route('posts.like',$post) }}"
-            method="POST"
-            class="flex-1">
+        <form action="{{ route('posts.like', $post) }}" method="POST" class="flex-1">
 
             @csrf
 
-            <button
-                type="submit"
+            <button type="submit"
                 class="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold transition-all hover:bg-slate-50 hover:text-blue-600">
 
-                @if($post->likes->contains('user_id', auth()->id()))
-
-                     <i class="ti ti-thumb-up text-base text-blue-600"></i>
+                @if ($post->likes->contains('user_id', auth()->id()))
+                    <i class="ti ti-thumb-up text-base text-blue-600"></i>
 
                     <span class="text-blue-600">
                         J'aime
                     </span>
-
                 @else
-
                     <i class="ti ti-thumb-up text-base"></i>
 
                     <span class="text-slate-500">
                         J'aime
                     </span>
-
                 @endif
 
             </button>
 
         </form>
+
+        {{-- Comment --}}
+        <button type="button"
+            @click="showComments = !showComments;
+                    $nextTick(() => document.getElementById('comment-{{ $post->id }}')?.focus())"
+            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600">
+
+            <i class="ti ti-message-circle text-base"></i>
+
+            Commenter
+
+        </button>
+
+        {{-- Share --}}
         <button
-            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600 cursor-pointer"><i
-                class="ti ti-message-circle text-base" aria-hidden="true"></i> Commenter</button>
+            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600">
+
+            <i class="ti ti-repeat text-base"></i>
+
+            Partager
+
+        </button>
+
+        {{-- Send --}}
         <button
-            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600 cursor-pointer"><i
-                class="ti ti-repeat text-base" aria-hidden="true"></i> Partager</button>
-        <button
-            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600 cursor-pointer"><i
-                class="ti ti-send text-base" aria-hidden="true"></i> Envoyer</button>
+            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600">
+
+            <i class="ti ti-send text-base"></i>
+
+            Envoyer
+
+        </button>
+
     </div>
+
+    {{-- Comments --}}
+    <div x-show="showComments" x-transition class="mt-4 border-t border-slate-100 pt-4">
+
+        @foreach ($post->comments as $comment)
+            <div class="mb-4 flex gap-3">
+
+                {{-- Avatar --}}
+                @if ($comment->user->image_url)
+                    <img src="{{ asset('storage/' . $comment->user->image_url) }}"
+                        class="h-8 w-8 rounded-full object-cover">
+                @else
+                    <div
+                        class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-[11px] font-semibold text-blue-700">
+
+                        {{ strtoupper(substr($comment->user->name, 0, 2)) }}
+
+                    </div>
+                @endif
+
+                <div class="flex-1">
+
+                    <div class="rounded-2xl bg-slate-100 px-4 py-3">
+
+                        <div class="flex items-center justify-between">
+
+                            <div>
+
+                                <p class="text-xs font-semibold text-slate-900">
+
+                                    {{ $comment->user->name }}
+
+                                </p>
+
+                                <p class="text-[10px] text-slate-400">
+
+                                    {{ $comment->created_at->diffForHumans() }}
+
+                                </p>
+
+                            </div>
+
+                            @if (auth()->id() === $comment->user_id)
+                                <form action="{{ route('comments.destroy', $comment) }}" method="POST"
+                                    onsubmit="return confirm('Delete this comment?')">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button class="text-red-500 hover:text-red-700">
+
+                                        <i class="ti ti-trash text-sm"></i>
+
+                                    </button>
+
+                                </form>
+                            @endif
+
+                        </div>
+
+                        <p class="mt-2 text-xs leading-relaxed text-slate-700">
+
+                            {{ $comment->content }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+        @endforeach
+
+        {{-- Add Comment --}}
+        <form action="{{ route('comments.store', $post) }}" method="POST" class="mt-4 flex items-start gap-3">
+
+            @csrf
+
+            {{-- Current User Avatar --}}
+            @if (auth()->user()->image_url)
+                <img src="{{ asset('storage/' . auth()->user()->image_url) }}"
+                    class="h-8 w-8 rounded-full object-cover">
+            @else
+                <div
+                    class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-[11px] font-semibold text-blue-700">
+
+                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+
+                </div>
+            @endif
+
+            <div class="flex-1">
+
+                <textarea id="comment-{{ $post->id }}" name="content" rows="2" placeholder="Écrire un commentaire..."
+                    class="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs text-slate-700 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100">{{ old('content') }}</textarea>
+
+                @error('content')
+                    <p class="mt-1 text-[11px] text-red-500">
+
+                        {{ $message }}
+
+                    </p>
+                @enderror
+
+                <div class="mt-2 flex justify-end">
+
+                    <button type="submit"
+                        class="rounded-xl bg-blue-600 px-5 py-2 text-xs font-semibold text-white transition hover:bg-blue-700">
+
+                        Commenter
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
 </article>
