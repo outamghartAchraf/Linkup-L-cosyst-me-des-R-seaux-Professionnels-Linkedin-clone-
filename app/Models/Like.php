@@ -3,26 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Post extends Model
+class Like extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'content',
         'user_id',
-        'image',
-        'video',
+        'post_id',
     ];
-
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function likes()
+    public function post()
     {
-        return $this->hasMany(Like::class);
+        return $this->belongsTo(Post::class);
     }
 }
