@@ -3,6 +3,7 @@
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\LikeController;
 
 Route::middleware('guest')->group(function () {
 
@@ -46,4 +47,6 @@ Route::middleware('auth')->group(function () {
     ->name('profile.update');
     Route::get('/users/{user}', [UserController::class, 'show'])
     ->name('users.show');
+    Route::post('/posts/{post}/like', [LikeController::class, 'toggle'])
+    ->name('posts.like');
 });

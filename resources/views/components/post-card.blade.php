@@ -91,10 +91,62 @@
         </video>
     @endif
 
+
+        <div class="mb-2 flex items-center justify-between border-b border-slate-100 pb-2 text-[11px] font-medium text-slate-500">
+
+        <div>
+
+            @if($post->likes->count())
+
+              {{ $post->likes->count() }}
+                {{ Str::plural('Like', $post->likes->count()) }}
+
+            @endif
+
+        </div>
+
+        <div>
+            5 Commentaires
+        </div>
+
+
+    </div>
+
     <div class="mt-2 flex gap-1">
-        <button
-            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600 cursor-pointer"><i
-                class="ti ti-thumb-up text-base" aria-hidden="true"></i> J'aime</button>
+
+        {{-- Like --}}
+        <form
+            action="{{ route('posts.like',$post) }}"
+            method="POST"
+            class="flex-1">
+
+            @csrf
+
+            <button
+                type="submit"
+                class="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold transition-all hover:bg-slate-50 hover:text-blue-600">
+
+                @if($post->likes->contains('user_id', auth()->id()))
+
+                     <i class="ti ti-thumb-up text-base text-blue-600"></i>
+
+                    <span class="text-blue-600">
+                        J'aime
+                    </span>
+
+                @else
+
+                    <i class="ti ti-thumb-up text-base"></i>
+
+                    <span class="text-slate-500">
+                        J'aime
+                    </span>
+
+                @endif
+
+            </button>
+
+        </form>
         <button
             class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600 cursor-pointer"><i
                 class="ti ti-message-circle text-base" aria-hidden="true"></i> Commenter</button>

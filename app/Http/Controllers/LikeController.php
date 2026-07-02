@@ -16,10 +16,8 @@ class LikeController extends Controller
             ->first();
 
         if ($like) {
-
             $like->delete();
         } else {
- 
             $post->likes()->create([
                 'user_id' => $user->id,
             ]);
