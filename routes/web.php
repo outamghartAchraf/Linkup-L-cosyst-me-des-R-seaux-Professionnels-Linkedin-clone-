@@ -3,6 +3,7 @@
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 
 Route::middleware('guest')->group(function () {
@@ -40,13 +41,18 @@ Route::middleware('auth')->group(function () {
         ->name('posts.destroy');
 
     Route::get('/users/profile', [UserController::class, 'profile'])
-    ->name('profile');
+        ->name('profile');
     Route::get('/users/profile/edit', [UserController::class, 'edit'])
-    ->name('profile.edit');
+        ->name('profile.edit');
     Route::put('/users/profile', [UserController::class, 'update'])
-    ->name('profile.update');
+        ->name('profile.update');
     Route::get('/users/{user}', [UserController::class, 'show'])
-    ->name('users.show');
+        ->name('users.show');
     Route::post('/posts/{post}/like', [LikeController::class, 'toggle'])
-    ->name('posts.like');
+        ->name('posts.like');
+
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store'])
+        ->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
+        ->name('comments.destroy');
 });
