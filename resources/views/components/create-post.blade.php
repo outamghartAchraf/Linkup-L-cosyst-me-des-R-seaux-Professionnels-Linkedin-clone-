@@ -53,23 +53,18 @@
                      </label>
                  </div>
 
-<div class="flex items-center gap-2">
-    <input
-        type="file"
-        name="video"
-        id="video"
-        class="hidden"
-        accept="video/mp4,video/webm,video/ogg,video/quicktime">
+                 <div class="flex items-center gap-2">
+                     <input type="file" name="video" id="video" class="hidden"
+                         accept="video/mp4,video/webm,video/ogg,video/quicktime">
 
-    <label
-        for="video"
-        class="cursor-pointer flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-sky-50 hover:text-sky-600">
+                     <label for="video"
+                         class="cursor-pointer flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-sky-50 hover:text-sky-600">
 
-        <i class="ti ti-video text-base text-sky-500"></i>
-        Vidéo
+                         <i class="ti ti-video text-base text-sky-500"></i>
+                         Vidéo
 
-    </label>
-</div>
+                     </label>
+                 </div>
                  <button type="button"
                      class="flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-amber-50 hover:text-amber-600">
                      <i class="ti ti-file-text text-base text-amber-500"></i>
@@ -84,13 +79,12 @@
 
              </div>
 
-    <button
-    type="submit"
-    class="flex items-center justify-center rounded-xl bg-blue-600 p-2.5 text-white transition-all hover:bg-blue-700">
+             <button type="submit"
+                 class="flex items-center justify-center rounded-xl bg-blue-600 p-2.5 text-white transition-all hover:bg-blue-700">
 
-    <i class="ti ti-send text-base"></i>
+                 <i class="ti ti-send text-base"></i>
 
-</button>
+             </button>
 
          </div>
 

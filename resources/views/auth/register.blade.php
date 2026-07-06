@@ -9,314 +9,276 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,450;0,9..144,560;0,9..144,650;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
 
     <style>
-        body{
+        body {
             font-family: 'Inter', sans-serif;
-            background-color: #F7F5F0;
+            background-color: #F4EFE4;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(20,33,61,0.045) 0px, rgba(20,33,61,0.045) 1px, transparent 1px, transparent 34px),
+                repeating-linear-gradient(90deg, rgba(20,33,61,0.045) 0px, rgba(20,33,61,0.045) 1px, transparent 1px, transparent 34px);
         }
-        .font-display{
-            font-family: 'Fraunces', serif;
+
+        .font-display { font-family: 'Fraunces', serif; }
+        .font-mono { font-family: 'IBM Plex Mono', monospace; }
+
+        .ink   { color: #14213D; }
+        .bg-ink { background-color: #14213D; }
+        .brass { color: #B0763A; }
+        .bg-brass { background-color: #B0763A; }
+        .bg-parchment { background-color: #FBF8F1; }
+
+        .tab {
+            position: absolute;
+            top: -28px;
+            left: 40px;
+            padding: 7px 18px 9px;
+            border-radius: 8px 8px 0 0;
+            background: #14213D;
+            box-shadow: 0 -2px 0 rgba(0,0,0,0.06) inset;
         }
-        @keyframes nodePulse{
-            0%, 100% { opacity: .55; }
-            50% { opacity: 1; }
+
+        .card-field {
+            border: none;
+            border-bottom: 1.5px solid #D8CFB8;
+            border-radius: 0;
+            background: transparent;
+            padding: 10px 2px 10px 30px;
+            transition: border-color .2s ease;
         }
-        .node-pulse{
-            animation: nodePulse 3.6s ease-in-out infinite;
-            transform-origin: center;
+        .card-field:focus {
+            outline: none;
+            border-bottom-color: #14213D;
         }
-        @media (prefers-reduced-motion: reduce){
-            .node-pulse{ animation: none; }
+        .card-field.field-error {
+            border-bottom-color: #B0453D;
         }
-        input::placeholder{ color: #9CA3AF; }
+        .field-wrap:focus-within .field-icon { color: #14213D; }
+
+        input::placeholder { color: #B7AF9C; }
+
+        .stack-card {
+            position: absolute;
+            width: 220px;
+            border-radius: 10px;
+            background: #FBF8F1;
+            box-shadow: 0 18px 34px rgba(0,0,0,0.35);
+            padding: 16px 18px;
+        }
+
+        @keyframes driftIn {
+            from { opacity: 0; transform: translateY(10px) rotate(var(--r, 0deg)); }
+            to   { opacity: 1; transform: translateY(0) rotate(var(--r, 0deg)); }
+        }
+        .stack-card { animation: driftIn .7s cubic-bezier(.2,.7,.2,1) both; }
+
+        /* small dashed line to suggest a blank card being filled in, on the brand panel */
+        .blank-card {
+            border: 1.5px dashed rgba(255,255,255,0.35);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .stack-card { animation: none; }
+        }
     </style>
 </head>
 
 <body>
 
-<div class="min-h-screen flex items-center justify-center px-4 py-6">
+<div class="min-h-screen flex items-center justify-center px-4 py-10">
 
-    <div class="w-full max-w-5xl bg-white rounded-3xl overflow-hidden shadow-2xl shadow-slate-300/40 grid lg:grid-cols-2">
+    <div class="w-full max-w-5xl bg-parchment rounded-2xl overflow-hidden shadow-2xl shadow-black/20 grid lg:grid-cols-2 border border-[#E7DFC9]">
 
-        <div class="hidden lg:flex relative overflow-hidden flex-col justify-between p-10"
-             style="background: linear-gradient(165deg, #0B1F3A 0%, #071527 100%);">
+        <!-- Left — the drawer, this time with a fresh card being added to the stack -->
+        <div class="hidden lg:flex relative flex-col justify-between p-10 bg-ink overflow-hidden">
 
-            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-                <g stroke="#9FB3D1" stroke-width="1" opacity="0.28">
-                    <line x1="90" y1="130" x2="190" y2="70"/>
-                    <line x1="190" y1="70" x2="270" y2="170"/>
-                    <line x1="90" y1="130" x2="130" y2="250"/>
-                    <line x1="270" y1="170" x2="350" y2="100"/>
-                    <line x1="270" y1="170" x2="430" y2="210"/>
-                    <line x1="270" y1="170" x2="300" y2="290"/>
-                    <line x1="130" y1="250" x2="300" y2="290"/>
-                    <line x1="130" y1="250" x2="70" y2="350"/>
-                    <line x1="300" y1="290" x2="210" y2="390"/>
-                    <line x1="300" y1="290" x2="390" y2="350"/>
-                    <line x1="350" y1="100" x2="430" y2="210"/>
-                    <line x1="430" y1="210" x2="390" y2="350"/>
-                    <line x1="70" y1="350" x2="210" y2="390"/>
-                    <line x1="210" y1="390" x2="150" y2="470"/>
-                    <line x1="210" y1="390" x2="290" y2="490"/>
-                    <line x1="390" y1="350" x2="470" y2="430"/>
-                    <line x1="390" y1="350" x2="430" y2="530"/>
-                    <line x1="150" y1="470" x2="290" y2="490"/>
-                    <line x1="290" y1="490" x2="430" y2="530"/>
-                    <line x1="150" y1="470" x2="90" y2="570"/>
-                    <line x1="290" y1="490" x2="370" y2="630"/>
-                    <line x1="90" y1="570" x2="230" y2="610"/>
-                    <line x1="230" y1="610" x2="290" y2="490"/>
-                    <line x1="430" y1="530" x2="490" y2="590"/>
-                    <line x1="90" y1="570" x2="170" y2="690"/>
-                    <line x1="230" y1="610" x2="330" y2="730"/>
-                    <line x1="370" y1="630" x2="330" y2="730"/>
-                    <line x1="370" y1="630" x2="450" y2="710"/>
-                    <line x1="490" y1="590" x2="450" y2="710"/>
-                    <line x1="170" y1="690" x2="330" y2="730"/>
-                </g>
-                <g>
-                    <circle cx="90" cy="130" r="3.5" fill="#FFFFFF" opacity="0.5"/>
-                    <circle cx="190" cy="70" r="3" fill="#FFFFFF" opacity="0.45"/>
-                    <circle cx="270" cy="170" r="5.5" fill="#C99A44" class="node-pulse"/>
-                    <circle cx="130" cy="250" r="3.5" fill="#FFFFFF" opacity="0.5"/>
-                    <circle cx="350" cy="100" r="3.5" fill="#FFFFFF" opacity="0.45"/>
-                    <circle cx="430" cy="210" r="3" fill="#FFFFFF" opacity="0.5"/>
-                    <circle cx="300" cy="290" r="6.5" fill="#C99A44" class="node-pulse"/>
-                    <circle cx="70" cy="350" r="3" fill="#FFFFFF" opacity="0.45"/>
-                    <circle cx="210" cy="390" r="3.5" fill="#FFFFFF" opacity="0.5"/>
-                    <circle cx="390" cy="350" r="3" fill="#FFFFFF" opacity="0.45"/>
-                    <circle cx="470" cy="430" r="3.5" fill="#FFFFFF" opacity="0.5"/>
-                    <circle cx="150" cy="470" r="3" fill="#FFFFFF" opacity="0.45"/>
-                    <circle cx="290" cy="490" r="5.5" fill="#C99A44" class="node-pulse"/>
-                    <circle cx="430" cy="530" r="3" fill="#FFFFFF" opacity="0.45"/>
-                    <circle cx="90" cy="570" r="3.5" fill="#FFFFFF" opacity="0.5"/>
-                    <circle cx="230" cy="610" r="3" fill="#FFFFFF" opacity="0.45"/>
-                    <circle cx="370" cy="630" r="3.5" fill="#FFFFFF" opacity="0.5"/>
-                    <circle cx="490" cy="590" r="3" fill="#FFFFFF" opacity="0.45"/>
-                    <circle cx="170" cy="690" r="3" fill="#FFFFFF" opacity="0.4"/>
-                    <circle cx="330" cy="730" r="3.5" fill="#FFFFFF" opacity="0.45"/>
-                    <circle cx="450" cy="710" r="3" fill="#FFFFFF" opacity="0.4"/>
-                </g>
-            </svg>
+            <div class="absolute inset-0 opacity-[0.05]"
+                 style="background-image: repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 40px);">
+            </div>
 
             <div class="relative z-10 flex items-center gap-2.5">
-                <svg width="28" height="28" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-                    <circle cx="11" cy="15" r="8.5" stroke="white" stroke-width="1.6"/>
-                    <circle cx="19" cy="15" r="8.5" stroke="#C99A44" stroke-width="1.6"/>
-                </svg>
-                <span class="font-display text-xl font-semibold text-white tracking-tight">LinkUp</span>
+                <span class="font-mono text-[11px] tracking-[0.3em] text-[#E3C089] border border-[#E3C089]/40 rounded px-2 py-1">No. 001</span>
+                <span class="font-display text-lg font-medium text-white tracking-tight">LinkUp</span>
+            </div>
+
+            <div class="relative z-10 flex-1 flex items-center justify-center my-10">
+                <div class="relative w-[260px] h-[220px]">
+
+                    <div class="stack-card" style="--r:-9deg; transform: rotate(-9deg) translate(-30px, 30px); z-index:1;">
+                        <div class="w-8 h-8 rounded-full bg-[#E7E1D2] mb-3"></div>
+                        <div class="h-2 w-24 bg-[#E7E1D2] rounded-full mb-2"></div>
+                        <div class="h-1.5 w-16 bg-[#EFEADF] rounded-full"></div>
+                    </div>
+
+                    <div class="stack-card" style="--r:6deg; transform: rotate(6deg) translate(28px, 10px); z-index:2; animation-delay:.08s;">
+                        <div class="w-8 h-8 rounded-full bg-[#D9C8A6] mb-3"></div>
+                        <div class="h-2 w-20 bg-[#E7E1D2] rounded-full mb-2"></div>
+                        <div class="h-1.5 w-14 bg-[#EFEADF] rounded-full"></div>
+                    </div>
+
+                    <!-- the new, still-blank card being created -->
+                    <div class="stack-card blank-card" style="--r:-2deg; transform: rotate(-2deg) translate(-4px, -18px); z-index:3; animation-delay:.16s; background: rgba(251,248,241,0.06);">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 rounded-full border-2 border-dashed border-[#E3C089] flex items-center justify-center">
+                                <span class="text-[#E3C089] text-xs leading-none">+</span>
+                            </div>
+                            <span class="font-mono text-[9px] tracking-[0.2em] text-[#E3C089]">NEW ENTRY</span>
+                        </div>
+                        <div class="h-2 w-28 border-b border-dashed border-white/30 mb-3"></div>
+                        <div class="h-1.5 w-20 border-b border-dashed border-white/20"></div>
+                    </div>
+
+                </div>
             </div>
 
             <div class="relative z-10 max-w-sm">
-                <p class="uppercase text-xs tracking-[0.25em] text-[#E3C788] font-medium mb-3">Professional network</p>
-                <h1 class="font-display text-3xl leading-[1.15] font-medium text-white mb-4">
-                    Where careers find their next connection.
+                <p class="font-mono uppercase text-[11px] tracking-[0.25em] text-[#E3C089] mb-3">Open a new file</p>
+                <h1 class="font-display text-3xl leading-[1.18] font-medium text-white mb-3">
+                    Where careers find<br>their next connection.
                 </h1>
-                <p class="text-blue-100/75 leading-7 text-sm">
-                    Build relationships that move your work forward. Join the people
-                    who hire, mentor, and collaborate through LinkUp.
+                <p class="text-[#C9CEDB] leading-7 text-sm">
+                    Build relationships that move your work forward. Join the
+                    people who hire, mentor, and collaborate through LinkUp.
                 </p>
             </div>
-
-            <p class="relative z-10 text-sm text-blue-100/50">
-                Trusted by professionals, one introduction at a time.
-            </p>
 
         </div>
 
-        <div class="p-6 sm:p-10 flex flex-col">
+        <!-- Right — the form, styled as an index card being filled in -->
+        <div class="p-6 sm:p-10 lg:p-12 flex flex-col relative">
 
-            <div class="lg:hidden flex items-center gap-2 mb-6">
-                <svg width="22" height="22" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-                    <circle cx="11" cy="15" r="8.5" stroke="#0B1F3A" stroke-width="1.6"/>
-                    <circle cx="19" cy="15" r="8.5" stroke="#C99A44" stroke-width="1.6"/>
-                </svg>
-                <span class="font-display text-lg font-semibold text-[#0B1F3A]">LinkUp</span>
+            <div class="lg:hidden flex items-center gap-2 mb-8">
+                <span class="font-mono text-[10px] tracking-[0.3em] ink border border-[#14213D]/30 rounded px-2 py-1">No. 001</span>
+                <span class="font-display text-lg font-medium ink">LinkUp</span>
             </div>
 
-            <div class="mb-6">
-                <p class="uppercase text-xs tracking-[0.2em] text-[#C99A44] font-semibold mb-2">Create account</p>
-                <h2 class="font-display text-2xl font-semibold text-[#0B1F3A]">
-                    Let's set up your profile
-                </h2>
-                <p class="text-gray-500 text-sm mt-1">
-                    Takes less than a minute — you can fill in the rest later.
-                </p>
-            </div>
+            <div class="relative bg-white rounded-xl border border-[#E7DFC9] px-7 pt-9 pb-8 shadow-sm">
 
-
-
-            <form method="POST" action="{{ route('register.store') }}" class="space-y-4">
-
-                @csrf
-
-                <div class="grid md:grid-cols-2 gap-4">
-
-                    <div>
-
-                        <label class="text-sm font-medium text-gray-700">
-                            Full Name
-                        </label>
-
-                        <div class="relative mt-1.5">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                </svg>
-                            </span>
-                            <input
-                                type="text"
-                                name="name"
-                                value="{{ old('name') }}"
-
-                                placeholder="Jane Cooper"
-                                class="@error('name') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
-                            >
-
-
-                        </div>
-         @error('name')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                    </div>
-
-                    <div>
-
-                        <label class="text-sm font-medium text-gray-700">
-                            Email
-                        </label>
-
-                        <div class="relative mt-1.5">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                </svg>
-                            </span>
-                            <input
-                                type="email"
-                                name="email"
-                                value="{{ old('email') }}"
-
-                                placeholder="jane@example.com"
-                                class="@error('email') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
-                            >
-
-                        </div>
-               @error('email')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                    </div>
-
+                <div class="tab">
+                    <span class="font-mono text-[10px] tracking-[0.25em] text-white">NEW&nbsp;ENTRY</span>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-4">
+                <div class="mb-7">
+                    <h2 class="font-display text-2xl font-medium ink">Let's set up your profile</h2>
+                    <p class="text-[#8A8272] text-sm mt-1">Takes less than a minute — you can fill in the rest later.</p>
+                </div>
+
+                <form method="POST" action="{{ route('register.store') }}" class="space-y-5">
+
+                    @csrf
+
+                    <div class="grid md:grid-cols-2 gap-5">
+
+                        <div>
+                            <label class="font-mono block text-[10px] tracking-[0.2em] uppercase text-[#8A8272] mb-1">Full name</label>
+                            <div class="relative field-wrap">
+                                <span class="field-icon absolute left-0 bottom-2.5 text-[#B7AF9C] transition-colors">
+                                    <svg class="w-[16px] h-[16px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                    </svg>
+                                </span>
+                                <input type="text" name="name" value="{{ old('name') }}"
+                                    placeholder="Jane Cooper"
+                                    class="@error('name') field-error @enderror card-field w-full ink text-sm">
+                            </div>
+                            @error('name')
+                                <p class="text-[#B0453D] text-xs mt-1.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="font-mono block text-[10px] tracking-[0.2em] uppercase text-[#8A8272] mb-1">Email</label>
+                            <div class="relative field-wrap">
+                                <span class="field-icon absolute left-0 bottom-2.5 text-[#B7AF9C] transition-colors">
+                                    <svg class="w-[16px] h-[16px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                    </svg>
+                                </span>
+                                <input type="email" name="email" value="{{ old('email') }}"
+                                    placeholder="jane@example.com"
+                                    class="@error('email') field-error @enderror card-field w-full ink text-sm">
+                            </div>
+                            @error('email')
+                                <p class="text-[#B0453D] text-xs mt-1.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                    </div>
 
                     <div>
-
-                        <label class="text-sm font-medium text-gray-700">
-                            Professional Headline
-                        </label>
-
-                        <div class="relative mt-1.5">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <label class="font-mono block text-[10px] tracking-[0.2em] uppercase text-[#8A8272] mb-1">Professional headline</label>
+                        <div class="relative field-wrap">
+                            <span class="field-icon absolute left-0 bottom-2.5 text-[#B7AF9C] transition-colors">
+                                <svg class="w-[16px] h-[16px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25v-4.25M20.25 14.15v-1.5a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25v1.5M20.25 14.15c-2.5 1.1-5.3 1.7-8.25 1.7s-5.75-.6-8.25-1.7M14.25 10.4V6.75a2.25 2.25 0 00-2.25-2.25h0a2.25 2.25 0 00-2.25 2.25v3.65" />
                                 </svg>
                             </span>
-                            <input
-                                type="text"
-                                name="headline"
-                                value="{{ old('headline') }}"
+                            <input type="text" name="headline" value="{{ old('headline') }}"
                                 placeholder="Full Stack Developer"
-
-                                class="@error('headline') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
-                            >
-
+                                class="@error('headline') field-error @enderror card-field w-full ink text-sm">
                         </div>
-
-                                  @error('headline')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
+                        @error('headline')
+                            <p class="text-[#B0453D] text-xs mt-1.5">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                </div>
+                    <div class="grid md:grid-cols-2 gap-5">
 
-                <div class="grid md:grid-cols-2 gap-4">
-
-                    <div>
-
-                        <label class="text-sm font-medium text-gray-700">
-                            Password
-                        </label>
-
-                        <div class="relative mt-1.5">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                                </svg>
-                            </span>
-                            <input
-                                type="password"
-                                name="password"
-
-                                placeholder="••••••••"
-                                class="@error('password') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
-                            >
-
-                        </div>
-                                @error('password')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        <div>
+                            <label class="font-mono block text-[10px] tracking-[0.2em] uppercase text-[#8A8272] mb-1">Password</label>
+                            <div class="relative field-wrap">
+                                <span class="field-icon absolute left-0 bottom-2.5 text-[#B7AF9C] transition-colors">
+                                    <svg class="w-[16px] h-[16px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                    </svg>
+                                </span>
+                                <input type="password" name="password"
+                                    placeholder="••••••••"
+                                    class="@error('password') field-error @enderror card-field w-full ink text-sm">
+                            </div>
+                            @error('password')
+                                <p class="text-[#B0453D] text-xs mt-1.5">{{ $message }}</p>
                             @enderror
-                    </div>
-
-                    <div>
-
-                        <label class="text-sm font-medium text-gray-700">
-                            Confirm Password
-                        </label>
-
-                        <div class="relative mt-1.5">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                                </svg>
-                            </span>
-                            <input
-                                type="password"
-                                name="password_confirmation"
-
-                                placeholder="••••••••"
-                                class="@error('password_confirmation') border-red-500 focus:border-red-500 focus:ring-red-500/15 @enderror w-full rounded-xl border border-gray-300 pl-11 pr-4 py-2.5 text-[#1E2433] focus:border-[#0B1F3A] focus:ring-2 focus:ring-[#0B1F3A]/15 outline-none transition"
-                            >
-
                         </div>
-                                  @error('password_confirmation')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+
+                        <div>
+                            <label class="font-mono block text-[10px] tracking-[0.2em] uppercase text-[#8A8272] mb-1">Confirm password</label>
+                            <div class="relative field-wrap">
+                                <span class="field-icon absolute left-0 bottom-2.5 text-[#B7AF9C] transition-colors">
+                                    <svg class="w-[16px] h-[16px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                    </svg>
+                                </span>
+                                <input type="password" name="password_confirmation"
+                                    placeholder="••••••••"
+                                    class="@error('password_confirmation') field-error @enderror card-field w-full ink text-sm">
+                            </div>
+                            @error('password_confirmation')
+                                <p class="text-[#B0453D] text-xs mt-1.5">{{ $message }}</p>
                             @enderror
+                        </div>
 
                     </div>
 
-                </div>
+                    <button type="submit"
+                        class="w-full bg-ink hover:bg-brass transition-colors text-white font-semibold py-3 rounded-lg shadow-md flex items-center justify-center gap-2 group mt-2">
+                        Create account
+                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </button>
 
-                <button
-                    type="submit"
-                    class="w-full bg-[#0B1F3A] hover:bg-[#071527] transition text-white py-3 rounded-xl font-semibold shadow-lg shadow-[#0B1F3A]/20 flex items-center justify-center gap-2 group"
-                >
-                    Create account
-                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
-                    </svg>
-                </button>
+                </form>
 
-            </form>
+            </div>
 
-            <p class="mt-6 text-center text-gray-600 text-sm">
+            <p class="mt-6 text-center text-[#8A8272] text-sm">
                 Already on LinkUp?
-                <a href=" " class="text-[#0B1F3A] font-semibold hover:text-[#C99A44] transition">
-                    Sign in
-                </a>
+                <a href="{{ route('login') }}" class="ink font-semibold hover:brass transition">Sign in</a>
             </p>
 
         </div>
