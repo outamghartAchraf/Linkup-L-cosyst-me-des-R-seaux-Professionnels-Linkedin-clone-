@@ -30,16 +30,59 @@
 
         </div>
 
-        <div class="flex-1">
-            <a href="{{ route('users.show', $post->user) }}">
-                <p class="text-sm font-semibold text-slate-900">{{ $post->user->name }}</p>
-            </a>
+ <div class="flex-1">
 
-            <p class="text-xs font-medium text-slate-400 mt-0.5 leading-normal">{{ $post->user->headline }}</p>
-            <p class="mt-1 flex items-center gap-1 text-[10px] font-medium text-slate-400">
-                <i class="ti ti-clock text-xs" aria-hidden="true"></i> {{ $post->created_at->diffForHumans() }}
+    <div class="flex items-center gap-2">
+
+        <a href="{{ route('users.show', $post->user) }}">
+            <p class="text-sm font-semibold text-slate-900">
+                {{ $post->user->name }}
             </p>
-        </div>
+        </a>
+
+
+
+                <form action=" " method="POST">
+                    @csrf
+                    @method('DELETE')
+
+                    <button
+                        class="rounded-full border border-blue-600 px-3 py-1 text-[10px] font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">
+
+                        Following
+
+                    </button>
+
+                </form>
+
+
+                <form action=" " method="POST">
+                    @csrf
+
+                    <button
+                        class="rounded-full border border-blue-600 px-3 py-1 text-[10px] font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">
+
+                        + Follow
+
+                    </button>
+
+                </form>
+
+
+
+
+    </div>
+
+    <p class="text-xs font-medium text-slate-400 mt-0.5 leading-normal">
+        {{ $post->user->headline }}
+    </p>
+
+    <p class="mt-1 flex items-center gap-1 text-[10px] font-medium text-slate-400">
+        <i class="ti ti-clock text-xs"></i>
+        {{ $post->created_at->diffForHumans() }}
+    </p>
+
+</div>
 
         {{-- Owner Menu --}}
         @if (auth()->id() === $post->user_id)
@@ -175,8 +218,11 @@
 
     </div>
 
-    {{-- Comments --}}
-    <div x-show="showComments" x-transition class="mt-4 border-t border-slate-100 pt-4">
+   {{-- Comments --}}
+<div x-show="showComments" x-transition class="mt-4 border-t border-slate-100 pt-4">
+
+    {{-- 1. SCROLLABLE CONTAINER START (Added max height and overflow) --}}
+    <div class="max-h-[400px] overflow-y-auto pr-2">
 
         @foreach ($post->comments as $comment)
             <div class="mb-4 flex gap-3">
@@ -247,7 +293,10 @@
             </div>
         @endforeach
 
-        {{-- Add Comment --}}
+    </div>
+    {{-- 2. SCROLLABLE CONTAINER END --}}
+
+    {{-- Add Comment --}}
         <form action="{{ route('comments.store', $post) }}" method="POST" class="mt-4 flex items-start gap-3">
 
             @csrf
