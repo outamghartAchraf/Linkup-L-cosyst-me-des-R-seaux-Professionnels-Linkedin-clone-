@@ -13,5 +13,9 @@ class FollowController extends Controller
         return back()->with('success', 'You are now following ' . $user->name);
     }
 
-    publ
+   public function unfollow(User $user)
+    {
+        auth()->user()->following()->detach($user->id);
+        return back()->with('success', 'You are no longer following ' . $user->name);
+    }
 }

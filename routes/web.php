@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\FollowController;
 
 Route::middleware('guest')->group(function () {
 
@@ -55,4 +56,12 @@ Route::middleware('auth')->group(function () {
         ->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
         ->name('comments.destroy');
+
+    Route::post('/users/{user}/follow',[FollowController::class, 'follow'])
+    ->name('users.follow');
+
+    Route::delete('/users/{user}/unfollow',[FollowController::class,'unfollow'])
+    ->name('users.unfollow');
+
+
 });
