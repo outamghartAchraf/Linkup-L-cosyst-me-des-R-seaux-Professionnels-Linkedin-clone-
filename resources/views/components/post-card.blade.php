@@ -40,9 +40,11 @@
             </p>
         </a>
 
+        @if(auth()->id() != $post->user_id)
 
+            @if(auth()->user()->following->contains($post->user))
 
-                <form action=" " method="POST">
+                <form action="{{ route('users.unfollow',$post->user) }}" method="POST">
                     @csrf
                     @method('DELETE')
 
@@ -55,8 +57,9 @@
 
                 </form>
 
+            @else
 
-                <form action=" " method="POST">
+                <form action="{{ route('users.follow',$post->user) }}" method="POST">
                     @csrf
 
                     <button
@@ -68,8 +71,9 @@
 
                 </form>
 
+            @endif
 
-
+        @endif
 
     </div>
 

@@ -27,7 +27,7 @@ return new class extends Migration
                 'follower_id',
                 'following_id'
             ]);
-            $table->timestamps();
+           
         });
     }
 
