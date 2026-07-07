@@ -4,11 +4,8 @@
         <div class="mb-3 flex items-center gap-2 text-xs font-medium text-slate-500">
 
             <i class="ti ti-repeat text-base"></i>
-
             <span>
-
                 {{ $post->user->name }} shared this
-
             </span>
 
         </div>
@@ -36,7 +33,6 @@
                         {{ strtoupper(substr($post->user->name, 0, 2)) }}
 
                     </div>
-
                 </a>
             @endif
 
@@ -63,7 +59,6 @@
                                 class="rounded-full border border-blue-600 px-3 py-1 text-[10px] font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">
 
                                 Following
-
                             </button>
 
                         </form>
@@ -198,7 +193,7 @@
     </div>
 
     <div class="mt-2 flex gap-1">
-
+        
         {{-- Like --}}
         <form action="{{ route('posts.like', $post) }}" method="POST" class="flex-1">
 

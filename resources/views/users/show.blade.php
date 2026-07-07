@@ -96,11 +96,15 @@
             <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
 
                 <p class="text-2xl font-bold text-slate-900">
-                    0
+                    @if ($user->following()->count() > 0)
+                        {{ $user->following()->count() }}
+                    @else
+                        0
+                    @endif
                 </p>
 
                 <p class="mt-1 text-xs text-slate-500">
-                    Connections
+                    following
                 </p>
 
             </div>

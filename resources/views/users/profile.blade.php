@@ -87,7 +87,12 @@
                 <div class="rounded-xl bg-slate-50 p-4 text-center">
 
                     <p class="text-xl font-bold text-slate-900">
-                        0
+                        @if ($user->followers()->count() > 0)
+                            {{ $user->followers()->count() }}
+                        @else
+                            0
+                        @endif
+                      
                     </p>
 
                     <p class="mt-1 text-xs text-slate-500">
