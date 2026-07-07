@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\RepostController;
 
 Route::middleware('guest')->group(function () {
 
@@ -62,6 +63,9 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/users/{user}/unfollow',[FollowController::class,'unfollow'])
     ->name('users.unfollow');
+
+    Route::post('/posts/{post}/share', [RepostController::class, 'store'])
+        ->name('posts.repost');
 
 
 });

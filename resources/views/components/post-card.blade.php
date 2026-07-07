@@ -1,6 +1,15 @@
 <article x-data="{ showComments: false }"
     class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:shadow-md hover:shadow-slate-200/40">
+    @if ($post->original_post_id)
+        <div class="mb-3 flex items-center gap-2 text-xs font-medium text-slate-500">
 
+            <i class="ti ti-repeat text-base"></i>
+            <span>
+                {{ $post->user->name }} shared this
+            </span>
+
+        </div>
+    @endif
     {{-- Header --}}
     <div class="mb-3 flex items-start gap-3">
 
@@ -24,65 +33,63 @@
                         {{ strtoupper(substr($post->user->name, 0, 2)) }}
 
                     </div>
-
                 </a>
             @endif
 
         </div>
 
- <div class="flex-1">
+        <div class="flex-1">
 
-    <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
 
-        <a href="{{ route('users.show', $post->user) }}">
-            <p class="text-sm font-semibold text-slate-900">
-                {{ $post->user->name }}
+                <a href="{{ route('users.show', $post->user) }}">
+                    <p class="text-sm font-semibold text-slate-900">
+                        {{ $post->user->name }}
+                    </p>
+                </a>
+
+                @if (auth()->id() != $post->user_id)
+
+                    @if (auth()->user()->following->contains($post->user))
+                        <form action="{{ route('users.unfollow', $post->user) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+
+                            <button
+                                class="rounded-full border border-blue-600 px-3 py-1 text-[10px] font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">
+
+                                Following
+                            </button>
+
+                        </form>
+                    @else
+                        <form action="{{ route('users.follow', $post->user) }}" method="POST">
+                            @csrf
+
+                            <button
+                                class="rounded-full border border-blue-600 px-3 py-1 text-[10px] font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">
+
+                                + Follow
+
+                            </button>
+
+                        </form>
+                    @endif
+
+                @endif
+
+            </div>
+
+            <p class="text-xs font-medium text-slate-400 mt-0.5 leading-normal">
+                {{ $post->user->headline }}
             </p>
-        </a>
 
+            <p class="mt-1 flex items-center gap-1 text-[10px] font-medium text-slate-400">
+                <i class="ti ti-clock text-xs"></i>
+                {{ $post->created_at->diffForHumans() }}
+            </p>
 
-
-                <form action=" " method="POST">
-                    @csrf
-                    @method('DELETE')
-
-                    <button
-                        class="rounded-full border border-blue-600 px-3 py-1 text-[10px] font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">
-
-                        Following
-
-                    </button>
-
-                </form>
-
-
-                <form action=" " method="POST">
-                    @csrf
-
-                    <button
-                        class="rounded-full border border-blue-600 px-3 py-1 text-[10px] font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">
-
-                        + Follow
-
-                    </button>
-
-                </form>
-
-
-
-
-    </div>
-
-    <p class="text-xs font-medium text-slate-400 mt-0.5 leading-normal">
-        {{ $post->user->headline }}
-    </p>
-
-    <p class="mt-1 flex items-center gap-1 text-[10px] font-medium text-slate-400">
-        <i class="ti ti-clock text-xs"></i>
-        {{ $post->created_at->diffForHumans() }}
-    </p>
-
-</div>
+        </div>
 
         {{-- Owner Menu --}}
         @if (auth()->id() === $post->user_id)
@@ -121,17 +128,34 @@
     </div>
 
     <p class="text-xs leading-relaxed text-slate-700 font-normal mb-4">
-        {{ $post->content }}
+        @if ($post->originalPost)
+            <p class="text-xs leading-relaxed text-slate-700 font-normal mb-4">
+
+                {{ $post->originalPost->content }}
+
+            </p>
+        @else
+            <p class="text-xs leading-relaxed text-slate-700 font-normal mb-4">
+
+                {{ $post->content }}
+
+            </p>
+        @endif
     </p>
 
-    @if ($post->image)
-        <img src="{{ asset('storage/' . $post->image) }}" alt="Post image" class="mb-4 w-full rounded-xl object-cover">
+    @php
+        $displayPost = $post->originalPost ?? $post;
+    @endphp
+
+    @if ($displayPost->image)
+        <img src="{{ asset('storage/' . $displayPost->image) }}" class="mb-4 w-full rounded-xl object-cover">
     @endif
 
-    @if ($post->video)
+    @if ($displayPost->video)
         <video controls class="mb-4 w-full rounded-xl">
-            <source src="{{ asset('storage/' . $post->video) }}" type="video/mp4">
-            Your browser does not support video.
+
+            <source src="{{ asset('storage/' . $displayPost->video) }}" type="video/mp4">
+
         </video>
     @endif
 
@@ -141,23 +165,35 @@
 
         <div>
 
-            @if ($post->likes->count())
-                {{ $post->likes->count() }}
-                {{ Str::plural('Like', $post->likes->count()) }}
-            @endif
+
+            {{ $post->likes->count() }}
+            {{ Str::plural('Like', $post->likes->count()) }}
+
 
         </div>
 
         <div>
+
+            {{ $post->reposts->count() }}
+            {{ Str::plural('Share', $post->reposts->count()) }}
+
+
+
+        </div>
+
+        <div>
+
             {{ $post->comments->count() }}
             {{ Str::plural('Comment', $post->comments->count()) }}
+
+
         </div>
 
 
     </div>
 
     <div class="mt-2 flex gap-1">
-
+        
         {{-- Like --}}
         <form action="{{ route('posts.like', $post) }}" method="POST" class="flex-1">
 
@@ -197,14 +233,20 @@
         </button>
 
         {{-- Share --}}
-        <button
-            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600">
+        <form action="{{ route('posts.repost', $post) }}" method="POST" class="flex-1">
 
-            <i class="ti ti-repeat text-base"></i>
+            @csrf
 
-            Partager
+            <button type="submit"
+                class="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600">
 
-        </button>
+                <i class="ti ti-repeat text-base"></i>
+
+                Repost
+
+            </button>
+
+        </form>
 
         {{-- Send --}}
         <button
@@ -218,85 +260,85 @@
 
     </div>
 
-   {{-- Comments --}}
-<div x-show="showComments" x-transition class="mt-4 border-t border-slate-100 pt-4">
+    {{-- Comments --}}
+    <div x-show="showComments" x-transition class="mt-4 border-t border-slate-100 pt-4">
 
-    {{-- 1. SCROLLABLE CONTAINER START (Added max height and overflow) --}}
-    <div class="max-h-[400px] overflow-y-auto pr-2">
+        {{-- 1. SCROLLABLE CONTAINER START (Added max height and overflow) --}}
+        <div class="max-h-[400px] overflow-y-auto pr-2">
 
-        @foreach ($post->comments as $comment)
-            <div class="mb-4 flex gap-3">
+            @foreach ($post->comments as $comment)
+                <div class="mb-4 flex gap-3">
 
-                {{-- Avatar --}}
-                @if ($comment->user->image_url)
-                    <img src="{{ asset('storage/' . $comment->user->image_url) }}"
-                        class="h-8 w-8 rounded-full object-cover">
-                @else
-                    <div
-                        class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-[11px] font-semibold text-blue-700">
+                    {{-- Avatar --}}
+                    @if ($comment->user->image_url)
+                        <img src="{{ asset('storage/' . $comment->user->image_url) }}"
+                            class="h-8 w-8 rounded-full object-cover">
+                    @else
+                        <div
+                            class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-[11px] font-semibold text-blue-700">
 
-                        {{ strtoupper(substr($comment->user->name, 0, 2)) }}
+                            {{ strtoupper(substr($comment->user->name, 0, 2)) }}
 
-                    </div>
-                @endif
+                        </div>
+                    @endif
 
-                <div class="flex-1">
+                    <div class="flex-1">
 
-                    <div class="rounded-2xl bg-slate-100 px-4 py-3">
+                        <div class="rounded-2xl bg-slate-100 px-4 py-3">
 
-                        <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between">
 
-                            <div>
+                                <div>
 
-                                <p class="text-xs font-semibold text-slate-900">
+                                    <p class="text-xs font-semibold text-slate-900">
 
-                                    {{ $comment->user->name }}
+                                        {{ $comment->user->name }}
 
-                                </p>
+                                    </p>
 
-                                <p class="text-[10px] text-slate-400">
+                                    <p class="text-[10px] text-slate-400">
 
-                                    {{ $comment->created_at->diffForHumans() }}
+                                        {{ $comment->created_at->diffForHumans() }}
 
-                                </p>
+                                    </p>
+
+                                </div>
+
+                                @if (auth()->id() === $comment->user_id)
+                                    <form action="{{ route('comments.destroy', $comment) }}" method="POST"
+                                        onsubmit="return confirm('Delete this comment?')">
+
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button class="text-red-500 hover:text-red-700">
+
+                                            <i class="ti ti-trash text-sm"></i>
+
+                                        </button>
+
+                                    </form>
+                                @endif
 
                             </div>
 
-                            @if (auth()->id() === $comment->user_id)
-                                <form action="{{ route('comments.destroy', $comment) }}" method="POST"
-                                    onsubmit="return confirm('Delete this comment?')">
+                            <p class="mt-2 text-xs leading-relaxed text-slate-700">
 
-                                    @csrf
-                                    @method('DELETE')
+                                {{ $comment->content }}
 
-                                    <button class="text-red-500 hover:text-red-700">
-
-                                        <i class="ti ti-trash text-sm"></i>
-
-                                    </button>
-
-                                </form>
-                            @endif
+                            </p>
 
                         </div>
-
-                        <p class="mt-2 text-xs leading-relaxed text-slate-700">
-
-                            {{ $comment->content }}
-
-                        </p>
 
                     </div>
 
                 </div>
+            @endforeach
 
-            </div>
-        @endforeach
+        </div>
+        {{-- 2. SCROLLABLE CONTAINER END --}}
 
-    </div>
-    {{-- 2. SCROLLABLE CONTAINER END --}}
-
-    {{-- Add Comment --}}
+        {{-- Add Comment --}}
         <form action="{{ route('comments.store', $post) }}" method="POST" class="mt-4 flex items-start gap-3">
 
             @csrf

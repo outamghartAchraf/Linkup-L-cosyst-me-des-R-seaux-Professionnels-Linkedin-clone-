@@ -14,6 +14,7 @@ class Post extends Model
         'user_id',
         'image',
         'video',
+        'original_post_id'
     ];
 
     public function user()
@@ -29,5 +30,21 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function originalPost()
+    {
+        return $this->belongsTo(
+            Post::class,
+            'original_post_id'
+        );
+    }
+
+    public function reposts()
+    {
+        return $this->hasMany(
+            Post::class,
+            'original_post_id'
+        );
     }
 }
