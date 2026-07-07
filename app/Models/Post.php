@@ -30,4 +30,20 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function originalPost()
+    {
+        return $this->belongsTo(
+            Post::class,
+            'original_post_id'
+        );
+    }
+
+    public function reposts()
+    {
+        return $this->hasMany(
+            Post::class,
+            'original_post_id'
+        );
+    }
 }
