@@ -7,6 +7,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\RepostController;
+use App\Http\Controllers\SavedPostController;
 
 Route::middleware('guest')->group(function () {
 
@@ -73,6 +74,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/company/create', [RepostController::class, 'createEmp'])
         ->name('company_emp');
 
-    Route::patch('/posts/{post}/pin',[PostController::class, 'togglePin'])
-    ->name('posts.pin');
+    Route::patch('/posts/{post}/pin', [PostController::class, 'togglePin'])
+        ->name('posts.pin');
+
+    Route::post(
+        '/posts/{post}/save',
+        [SavedPostController::class, 'store']
+    )->name('posts.save');
+
+    Route::delete(
+        '/posts/{post}/unsave',
+        [SavedPostController::class, 'destroy']
+    )->name('posts.unsave');
+
+    Route::get(
+        '/saved-items',
+        [SavedPostController::class, 'index']
+    )->name('saved.index');
 });
