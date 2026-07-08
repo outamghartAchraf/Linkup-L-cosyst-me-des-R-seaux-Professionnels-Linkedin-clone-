@@ -14,7 +14,8 @@ class Post extends Model
         'user_id',
         'image',
         'video',
-        'original_post_id'
+        'original_post_id',
+        'is_pinned',
     ];
 
     public function user()
@@ -46,5 +47,13 @@ class Post extends Model
             Post::class,
             'original_post_id'
         );
+    }
+
+    public function savedBy()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'saved_posts'
+        )->withTimestamps();
     }
 }

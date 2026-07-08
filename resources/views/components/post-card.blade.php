@@ -10,6 +10,23 @@
 
         </div>
     @endif
+
+        @if($post->is_pinned)
+
+        <div class="mb-3">
+
+            <span
+                class="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-3 py-1 text-[11px] font-semibold text-yellow-700">
+
+                <i class="ti ti-pin-filled"></i>
+
+                Pinned Post
+
+            </span>
+
+        </div>
+
+    @endif
     {{-- Header --}}
     <div class="mb-3 flex items-start gap-3">
 
@@ -109,6 +126,33 @@
                             Modifier
                         </a>
                     @endcan
+                    <form
+    action="{{ route('posts.pin',$post) }}"
+    method="POST">
+
+    @csrf
+    @method('PATCH')
+
+    <button
+        class="flex w-full items-center gap-2 px-4 py-3 text-left text-xs font-medium text-slate-700 hover:bg-slate-100">
+
+        @if($post->is_pinned)
+
+            <i class="ti ti-pin-off text-base"></i>
+
+            Unpin
+
+        @else
+
+            <i class="ti ti-pin text-base"></i>
+
+            Pin Post
+
+        @endif
+
+    </button>
+
+</form>
                     @can('delete', $post)
                         <form action="{{ route('posts.destroy', $post) }}" method="POST"
                             onsubmit="return confirm('Delete this post?')">
@@ -138,6 +182,8 @@
             <p class="text-xs leading-relaxed text-slate-700 font-normal mb-4">
 
                 {{ $post->content }}
+
+                {{-- {{ Str::limit($post->content, 150, '... Voir plus') }} --}}
 
             </p>
         @endif
@@ -193,7 +239,7 @@
     </div>
 
     <div class="mt-2 flex gap-1">
-        
+
         {{-- Like --}}
         <form action="{{ route('posts.like', $post) }}" method="POST" class="flex-1">
 
@@ -249,14 +295,45 @@
         </form>
 
         {{-- Send --}}
-        <button
-            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600">
+{{-- Save --}}
+@if(auth()->user()->savedPosts->contains($post->id))
 
-            <i class="ti ti-send text-base"></i>
+<form action="{{ route('posts.unsave', $post) }}" method="POST" class="flex-1">
 
-            Envoyer
+    @csrf
+    @method('DELETE')
 
-        </button>
+    <button
+        type="submit"
+        class="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-blue-600 transition-all hover:bg-slate-50">
+
+        <i class="ti ti-bookmark-filled text-base"></i>
+
+        Saved
+
+    </button>
+
+</form>
+
+@else
+
+<form action="{{ route('posts.save', $post) }}" method="POST" class="flex-1">
+
+    @csrf
+
+    <button
+        type="submit"
+        class="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600">
+
+        <i class="ti ti-bookmark text-base"></i>
+
+        Save
+
+    </button>
+
+</form>
+
+@endif
 
     </div>
 
@@ -303,6 +380,8 @@
                                     </p>
 
                                 </div>
+
+
 
                                 @if (auth()->id() === $comment->user_id)
                                     <form action="{{ route('comments.destroy', $comment) }}" method="POST"

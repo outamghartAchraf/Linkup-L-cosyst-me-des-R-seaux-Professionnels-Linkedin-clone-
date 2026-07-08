@@ -7,6 +7,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\RepostController;
+use App\Http\Controllers\SavedPostController;
 
 Route::middleware('guest')->group(function () {
 
@@ -58,14 +59,30 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
         ->name('comments.destroy');
 
-    Route::post('/users/{user}/follow',[FollowController::class, 'follow'])
-    ->name('users.follow');
+    Route::post('/users/{user}/follow', [FollowController::class, 'follow'])
+        ->name('users.follow');
 
-    Route::delete('/users/{user}/unfollow',[FollowController::class,'unfollow'])
-    ->name('users.unfollow');
+    Route::delete('/users/{user}/unfollow', [FollowController::class, 'unfollow'])
+        ->name('users.unfollow');
 
     Route::post('/posts/{post}/share', [RepostController::class, 'store'])
         ->name('posts.repost');
 
+    Route::get('/company', [RepostController::class, 'companyEmp'])
+        ->name('company_emp');
 
+    Route::get('/company/create', [RepostController::class, 'createEmp'])
+        ->name('company_emp');
+
+    Route::patch('/posts/{post}/pin', [PostController::class, 'togglePin'])
+        ->name('posts.pin');
+
+    Route::post('/posts/{post}/save', [SavedPostController::class, 'store'])
+    ->name('posts.save');
+
+    Route::delete('/posts/{post}/unsave', [SavedPostController::class, 'destroy'])
+    ->name('posts.unsave');
+
+    Route::get('/saved-items', [SavedPostController::class, 'index']
+    )->name('saved-posts.index');
 });

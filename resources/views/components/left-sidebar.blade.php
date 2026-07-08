@@ -38,17 +38,12 @@
 
           <div class="mt-5 space-y-2 border-t border-slate-100 pt-4 text-xs">
             <div class="flex justify-between text-slate-500 font-medium">
-              <span>Vues du profil</span>
-              <span class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded-md">142</span>
+
+              <a href="{{ route('saved-posts.index') }}">Post Saved</a>
+
+              <span class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded-md">{!! auth()->user()->savedPosts->count() !!}</span>
             </div>
-            <div class="flex justify-between text-slate-500 font-medium">
-              <span>Apparitions</span>
-              <span class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded-md">38</span>
-            </div>
-            <div class="flex justify-between text-slate-500 font-medium">
-              <span>Connexions</span>
-              <span class="font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-md">312</span>
-            </div>
+
           </div>
         </div>
       </div>

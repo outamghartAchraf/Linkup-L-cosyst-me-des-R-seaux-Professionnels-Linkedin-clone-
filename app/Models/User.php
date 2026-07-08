@@ -81,7 +81,7 @@ class User extends Authenticatable
         );
     }
 
- 
+
     public function followers()
     {
         return $this->belongsToMany(
@@ -95,5 +95,13 @@ class User extends Authenticatable
             'follower_id'
 
         );
+    }
+
+    public function savedPosts()
+    {
+        return $this->belongsToMany(
+            Post::class,
+            'saved_posts'
+        )->withTimestamps();
     }
 }
