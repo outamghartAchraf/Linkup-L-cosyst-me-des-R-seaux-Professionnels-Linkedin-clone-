@@ -15,7 +15,7 @@ class SavedPostController extends Controller
             ->latest()
             ->get();
 
-        return view('saved-items', compact('posts'));
+       return view('posts.saved-items', compact('posts'));
     }
 
     /**

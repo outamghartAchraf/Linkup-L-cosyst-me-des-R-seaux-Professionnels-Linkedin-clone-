@@ -295,14 +295,45 @@
         </form>
 
         {{-- Send --}}
-        <button
-            class="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600">
+{{-- Save --}}
+@if(auth()->user()->savedPosts->contains($post->id))
 
-            <i class="ti ti-send text-base"></i>
+<form action="{{ route('posts.unsave', $post) }}" method="POST" class="flex-1">
 
-            Envoyer
+    @csrf
+    @method('DELETE')
 
-        </button>
+    <button
+        type="submit"
+        class="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-blue-600 transition-all hover:bg-slate-50">
+
+        <i class="ti ti-bookmark-filled text-base"></i>
+
+        Saved
+
+    </button>
+
+</form>
+
+@else
+
+<form action="{{ route('posts.save', $post) }}" method="POST" class="flex-1">
+
+    @csrf
+
+    <button
+        type="submit"
+        class="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-blue-600">
+
+        <i class="ti ti-bookmark text-base"></i>
+
+        Save
+
+    </button>
+
+</form>
+
+@endif
 
     </div>
 

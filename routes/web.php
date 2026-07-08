@@ -77,18 +77,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/posts/{post}/pin', [PostController::class, 'togglePin'])
         ->name('posts.pin');
 
-    Route::post(
-        '/posts/{post}/save',
-        [SavedPostController::class, 'store']
-    )->name('posts.save');
+    Route::post('/posts/{post}/save', [SavedPostController::class, 'store'])
+    ->name('posts.save');
 
-    Route::delete(
-        '/posts/{post}/unsave',
-        [SavedPostController::class, 'destroy']
-    )->name('posts.unsave');
+    Route::delete('/posts/{post}/unsave', [SavedPostController::class, 'destroy'])
+    ->name('posts.unsave');
 
-    Route::get(
-        '/saved-items',
-        [SavedPostController::class, 'index']
-    )->name('saved.index');
+    Route::get('/saved-items', [SavedPostController::class, 'index']
+    )->name('saved-posts.index');
 });
