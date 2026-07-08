@@ -13,7 +13,7 @@ class PostController extends Controller
     use AuthorizesRequests;
     public function index()
     {
-        $posts = Post::with('user')->latest()->get();
+        $posts = Post::with('user')->orderByDesc('is_pinned')->latest()->get();
         return view('posts.index', compact('posts'));
     }
 
@@ -79,5 +79,14 @@ class PostController extends Controller
         $post->delete();
 
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
+    }
+
+    public function togglePin(Post $post)
+    {
+        $post->update([
+            'is_pinned' => ! $post->is_pinned
+        ]);
+
+        return back()->with('success', 'Post updated.');
     }
 }

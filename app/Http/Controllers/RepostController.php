@@ -28,4 +28,23 @@ class RepostController extends Controller
 
         return back()->with('success', 'Post reposted successfully.');
     }
+
+
+public function companyEmp(Request $request)
+{
+    $query = Post::with(['user', 'likes', 'comments.user']);
+
+    if ($request->filled('company')) {
+        $query->whereHas('user', function ($q) use ($request) {
+            $q->where('company', $request->company);
+        });
+    }
+
+    $posts = $query->latest()->get();
+    
+    return view('test1', compact('posts'));
+}
+    public function createEmp(){
+        return view('test');
+    }
 }
