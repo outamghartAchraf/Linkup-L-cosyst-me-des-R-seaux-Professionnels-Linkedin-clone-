@@ -48,4 +48,12 @@ class Post extends Model
             'original_post_id'
         );
     }
+
+    public function savedBy()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'saved_posts'
+        )->withTimestamps();
+    }
 }
