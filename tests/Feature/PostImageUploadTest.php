@@ -25,13 +25,11 @@ class PostImageUploadTest extends TestCase
             ->assertRedirect(route('posts.index'));
 
         $post = Post::query()->sole();
-        $expectedImage = "data:{$image->getMimeType()};base64,".base64_encode($image->getContent());
-
-        $this->assertSame($expectedImage, $post->image);
+        $this->assertDataUriImage($post->image);
 
         $this->get(route('posts.index'))
             ->assertOk()
-            ->assertSee('src="'.$expectedImage.'"', false);
+            ->assertSee('src="'.$post->image.'"', false);
     }
 
     public function test_updated_post_image_is_saved_as_a_data_uri(): void
@@ -47,8 +45,16 @@ class PostImageUploadTest extends TestCase
             ])
             ->assertRedirect(route('posts.index'));
 
-        $expectedImage = "data:{$image->getMimeType()};base64,".base64_encode($image->getContent());
+        $this->assertDataUriImage($post->fresh()->image);
+    }
 
-        $this->assertSame($expectedImage, $post->fresh()->image);
+    private function assertDataUriImage(string $image): void
+    {
+        $this->assertMatchesRegularExpression('#^data:image/(?:webp|jpeg);base64,#', $image);
+
+        $decoded = base64_decode(substr($image, strpos($image, ',') + 1), true);
+
+        $this->assertIsString($decoded);
+        $this->assertNotFalse(getimagesizefromstring($decoded));
     }
 }

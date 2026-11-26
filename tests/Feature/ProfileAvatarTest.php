@@ -27,9 +27,10 @@ class ProfileAvatarTest extends TestCase
             ])
             ->assertRedirect(route('profile'));
 
-        $expectedAvatar = "data:{$image->getMimeType()};base64,".base64_encode($image->getContent());
+        $expectedAvatar = $user->fresh()->image_url;
 
-        $this->assertSame($expectedAvatar, $user->fresh()->image_url);
+        $this->assertMatchesRegularExpression('#^data:image/(?:webp|jpeg);base64,#', $expectedAvatar);
+        $this->assertNotFalse(getimagesizefromstring(base64_decode(substr($expectedAvatar, strpos($expectedAvatar, ',') + 1))));
 
         foreach ([
             route('profile'),

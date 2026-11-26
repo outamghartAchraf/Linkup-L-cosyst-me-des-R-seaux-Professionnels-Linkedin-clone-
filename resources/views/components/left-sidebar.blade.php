@@ -10,7 +10,8 @@
 
 <img
     src="{{ auth()->user()->avatar_url }}"
-    class="h-16 w-16 rounded-full object-cover border-4 border-white">
+    class="h-16 w-16 rounded-full object-cover border-4 border-white"
+    loading="lazy" decoding="async">
 
 @else
 
@@ -41,7 +42,7 @@
 
               <a href="{{ route('saved-posts.index') }}">Post Saved</a>
 
-              <span class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded-md">{!! auth()->user()->savedPosts->count() !!}</span>
+              <span class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded-md">{{ auth()->user()->savedPosts()->count() }}</span>
             </div>
 
           </div>

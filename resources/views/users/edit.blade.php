@@ -36,7 +36,8 @@
 
         <img
             src="{{ $user->avatar_url }}"
-            class="w-24 h-24 rounded-full object-cover mb-3 border">
+            class="w-24 h-24 rounded-full object-cover mb-3 border"
+            loading="lazy" decoding="async">
 
     @else
 

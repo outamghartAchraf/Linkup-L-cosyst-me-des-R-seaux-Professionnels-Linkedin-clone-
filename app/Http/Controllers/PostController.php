@@ -5,32 +5,36 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Services\ImageDataUriService;
+use App\Services\PostCardState;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PostController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+    public function index(PostCardState $postCardState)
     {
-        $posts = Post::with('user')->orderByDesc('is_pinned')->latest()->get();
+        $user = auth()->user();
+        $posts = Post::query()
+            ->withCardData()
+            ->orderByDesc('is_pinned')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->simplePaginate(10);
 
-        return view('posts.index', compact('posts'));
+        return view('posts.index', [
+            'posts' => $posts,
+            ...$postCardState->forPosts($user, $posts->getCollection()),
+        ]);
     }
 
-    public function store(StorePostRequest $request)
+    public function store(StorePostRequest $request, ImageDataUriService $imageDataUriService)
     {
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageContents = $image->getContent();
-
-            if ($imageContents === false) {
-                throw new \RuntimeException('Unable to read the uploaded post image.');
-            }
-
-            $validated['image'] = "data:{$image->getMimeType()};base64,".base64_encode($imageContents);
+            $validated['image'] = $imageDataUriService->encode($request->file('image'), 1080, 78);
         }
 
         if ($request->hasFile('video')) {
@@ -51,21 +55,14 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post, ImageDataUriService $imageDataUriService)
     {
         $this->authorize('update', $post);
 
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageContents = $image->getContent();
-
-            if ($imageContents === false) {
-                throw new \RuntimeException('Unable to read the uploaded post image.');
-            }
-
-            $validated['image'] = "data:{$image->getMimeType()};base64,".base64_encode($imageContents);
+            $validated['image'] = $imageDataUriService->encode($request->file('image'), 1080, 78);
         }
 
         $post->update($validated);

@@ -3,19 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Illuminate\Http\Request;
+use App\Services\PostCardState;
 
 class SavedPostController extends Controller
 {
-    public function index()
+    public function index(PostCardState $postCardState)
     {
-        $posts = auth()->user()
+        $user = auth()->user();
+        $posts = $user
             ->savedPosts()
-            ->with(['user', 'likes', 'comments.user'])
-            ->latest()
-            ->get();
+            ->withCardData()
+            ->orderByDesc('posts.created_at')
+            ->orderByDesc('posts.id')
+            ->simplePaginate(10);
 
-       return view('posts.saved-items', compact('posts'));
+        return view('posts.saved-items', [
+            'posts' => $posts,
+            'savedPostCount' => $user->savedPosts()->count(),
+            ...$postCardState->forPosts($user, $posts->getCollection(), true),
+        ]);
     }
 
     /**
@@ -32,7 +38,6 @@ class SavedPostController extends Controller
             'Post saved successfully.'
         );
     }
-
 
     public function destroy(Post $post)
     {

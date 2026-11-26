@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
@@ -17,6 +18,29 @@ class Post extends Model
         'original_post_id',
         'is_pinned',
     ];
+
+    public function scopeWithCardData(Builder $query): Builder
+    {
+        return $query
+            ->select([
+                'posts.id',
+                'posts.user_id',
+                'posts.content',
+                'posts.image',
+                'posts.video',
+                'posts.original_post_id',
+                'posts.is_pinned',
+                'posts.created_at',
+            ])
+            ->with([
+                'user:id,name,headline,company,image_url',
+                'originalPost:id,user_id,content,image,video',
+                'comments' => fn ($query) => $query
+                    ->select('id', 'post_id', 'user_id', 'content', 'created_at')
+                    ->with('user:id,name,image_url'),
+            ])
+            ->withCount(['likes', 'comments', 'reposts']);
+    }
 
     public function user()
     {

@@ -38,7 +38,7 @@
                 <a href="{{ route('users.show', $post->user) }}">
 
                     <img src="{{ $post->user->avatar_url }}"
-                        class="h-11 w-11 rounded-full object-cover">
+                        class="h-11 w-11 rounded-full object-cover" loading="lazy" decoding="async">
 
                 </a>
             @else
@@ -67,7 +67,7 @@
 
                 @if (auth()->id() != $post->user_id)
 
-                    @if (auth()->user()->following->contains($post->user))
+                    @if (isset($followedUserIds[$post->user_id]))
                         <form action="{{ route('users.unfollow', $post->user) }}" method="POST">
                             @csrf
                             @method('DELETE')
@@ -200,7 +200,7 @@
                 : asset('storage/' . $displayPost->image);
         @endphp
         <img src="{{ $imageSrc }}" class="mb-4 w-full rounded-xl object-cover"
-            onerror="this.style.display='none'">
+            loading="lazy" decoding="async" onerror="this.style.display='none'">
     @endif
 
     @if ($displayPost->video)
@@ -218,16 +218,16 @@
         <div>
 
 
-            {{ $post->likes->count() }}
-            {{ Str::plural('Like', $post->likes->count()) }}
+            {{ $post->likes_count }}
+            {{ Str::plural('Like', $post->likes_count) }}
 
 
         </div>
 
         <div>
 
-            {{ $post->reposts->count() }}
-            {{ Str::plural('Share', $post->reposts->count()) }}
+            {{ $post->reposts_count }}
+            {{ Str::plural('Share', $post->reposts_count) }}
 
 
 
@@ -235,8 +235,8 @@
 
         <div>
 
-            {{ $post->comments->count() }}
-            {{ Str::plural('Comment', $post->comments->count()) }}
+            {{ $post->comments_count }}
+            {{ Str::plural('Comment', $post->comments_count) }}
 
 
         </div>
@@ -254,7 +254,7 @@
             <button type="submit"
                 class="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold transition-all hover:bg-slate-50 hover:text-blue-600">
 
-                @if ($post->likes->contains('user_id', auth()->id()))
+                @if (isset($likedPostIds[$post->id]))
                     <i class="ti ti-thumb-up text-base text-blue-600"></i>
 
                     <span class="text-blue-600">
@@ -302,7 +302,7 @@
 
         {{-- Send --}}
 {{-- Save --}}
-@if(auth()->user()->savedPosts->contains($post->id))
+@if(isset($savedPostIds[$post->id]))
 
 <form action="{{ route('posts.unsave', $post) }}" method="POST" class="flex-1">
 
@@ -355,7 +355,7 @@
                     {{-- Avatar --}}
                     @if ($comment->user->avatar_url)
                         <img src="{{ $comment->user->avatar_url }}"
-                            class="h-8 w-8 rounded-full object-cover">
+                            class="h-8 w-8 rounded-full object-cover" loading="lazy" decoding="async">
                     @else
                         <div
                             class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-[11px] font-semibold text-blue-700">
@@ -431,7 +431,7 @@
             {{-- Current User Avatar --}}
             @if (auth()->user()->avatar_url)
                 <img src="{{ auth()->user()->avatar_url }}"
-                    class="h-8 w-8 rounded-full object-cover">
+                    class="h-8 w-8 rounded-full object-cover" loading="lazy" decoding="async">
             @else
                 <div
                     class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-[11px] font-semibold text-blue-700">

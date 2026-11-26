@@ -19,7 +19,8 @@
                 <img
                     src="{{ $user->avatar_url }}"
                     alt="{{ $user->name }}"
-                    class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg">
+                    class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg"
+                    loading="lazy" decoding="async">
 
             @else
 
@@ -84,7 +85,7 @@
             <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
 
                 <p class="text-2xl font-bold text-slate-900">
-                    {{ $user->posts->count() }}
+                    {{ $user->posts_count }}
                 </p>
 
                 <p class="mt-1 text-xs text-slate-500">
@@ -96,11 +97,7 @@
             <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
 
                 <p class="text-2xl font-bold text-slate-900">
-                    @if ($user->following()->count() > 0)
-                        {{ $user->following()->count() }}
-                    @else
-                        0
-                    @endif
+                    {{ $user->following_count }}
                 </p>
 
                 <p class="mt-1 text-xs text-slate-500">
@@ -136,7 +133,7 @@
 
     <div class="space-y-4">
 
-        @forelse($user->posts()->latest()->get() as $post)
+        @forelse($posts as $post)
 
             @include('components.post-card', ['post' => $post])
 
@@ -153,6 +150,10 @@
             </div>
 
         @endforelse
+
+        <div class="mt-4">
+            {{ $posts->links() }}
+        </div>
 
     </div>
 

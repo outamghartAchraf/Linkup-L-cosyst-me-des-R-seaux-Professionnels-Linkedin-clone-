@@ -7,6 +7,8 @@ use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
+use App\Services\ImageDataUriService;
+use App\Services\PostCardState;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -56,15 +58,22 @@ class UserController extends Controller
         return redirect()->route('login');
     }
 
-    public function profile()
+    public function profile(PostCardState $postCardState)
     {
         $user = Auth::user();
+        $user->loadCount(['posts', 'followers']);
 
         $posts = $user->posts()
-            ->latest()
-            ->get();
+            ->withCardData()
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->simplePaginate(10);
 
-        return view('users.profile', compact('user', 'posts'));
+        return view('users.profile', [
+            'user' => $user,
+            'posts' => $posts,
+            ...$postCardState->forPosts(auth()->user(), $posts->getCollection()),
+        ]);
     }
 
     public function edit()
@@ -74,21 +83,14 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    public function update(UpdateProfileRequest $request)
+    public function update(UpdateProfileRequest $request, ImageDataUriService $imageDataUriService)
     {
         $validated = $request->validated();
         $user = $request->user();
         unset($validated['image']);
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageContents = $image->getContent();
-
-            if ($imageContents === false) {
-                throw new \RuntimeException('Unable to read the uploaded profile image.');
-            }
-
-            $validated['image_url'] = "data:{$image->getMimeType()};base64,".base64_encode($imageContents);
+            $validated['image_url'] = $imageDataUriService->encode($request->file('image'), 300, 80);
         } elseif (blank($validated['image_url'] ?? null)) {
             unset($validated['image_url']);
         }
@@ -100,12 +102,20 @@ class UserController extends Controller
             ->with('success', 'Profile updated successfully.');
     }
 
-    public function show(User $user)
+    public function show(User $user, PostCardState $postCardState)
     {
-        $posts = $user->posts()
-            ->latest()
-            ->get();
+        $user->loadCount(['posts', 'following', 'followers']);
 
-        return view('users.show', compact('user', 'posts'));
+        $posts = $user->posts()
+            ->withCardData()
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->simplePaginate(10);
+
+        return view('users.show', [
+            'user' => $user,
+            'posts' => $posts,
+            ...$postCardState->forPosts(auth()->user(), $posts->getCollection()),
+        ]);
     }
 }

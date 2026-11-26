@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Services\PostCardState;
 use Illuminate\Http\Request;
 
 class RepostController extends Controller
@@ -18,10 +19,10 @@ class RepostController extends Controller
         }
 
         Post::create([
-            'user_id'          => auth()->id(),
-            'content'          => '',
-            'image'            => null,
-            'video'            => null,
+            'user_id' => auth()->id(),
+            'content' => '',
+            'image' => null,
+            'video' => null,
             'original_post_id' => $post->id,
 
         ]);
@@ -29,22 +30,29 @@ class RepostController extends Controller
         return back()->with('success', 'Post reposted successfully.');
     }
 
+    public function companyEmp(Request $request, PostCardState $postCardState)
+    {
+        $query = Post::query()->withCardData();
 
-public function companyEmp(Request $request)
-{
-    $query = Post::with(['user', 'likes', 'comments.user']);
+        if ($request->filled('company')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('company', $request->company);
+            });
+        }
 
-    if ($request->filled('company')) {
-        $query->whereHas('user', function ($q) use ($request) {
-            $q->where('company', $request->company);
-        });
+        $posts = $query
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->simplePaginate(10);
+
+        return view('test1', [
+            'posts' => $posts,
+            ...$postCardState->forPosts(auth()->user(), $posts->getCollection()),
+        ]);
     }
 
-    $posts = $query->latest()->get();
-    
-    return view('test1', compact('posts'));
-}
-    public function createEmp(){
+    public function createEmp()
+    {
         return view('test');
     }
 }

@@ -17,7 +17,8 @@
                     <div class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-blue-100 text-3xl font-bold text-blue-700 shadow">
                         @if ($user->avatar_url)
                             <img src="{{ $user->avatar_url }}"
-                                class="w-32 h-32 rounded-full object-cover border-4 border-white shadow">
+                                class="w-32 h-32 rounded-full object-cover border-4 border-white shadow"
+                                loading="lazy" decoding="async">
                         @else
                             <div class="flex h-32 w-32 items-center justify-center rounded-full bg-blue-100 text-3xl font-bold text-blue-700 border-4 border-white">
                                 {{ strtoupper(substr($user->name, 0, 2)) }}
@@ -63,7 +64,7 @@
                 <div class="rounded-xl bg-slate-50 p-4 text-center">
 
                     <p class="text-xl font-bold text-slate-900">
-                        {{ $posts->count() }}
+                        {{ $user->posts_count }}
                     </p>
 
                     <p class="mt-1 text-xs text-slate-500">
@@ -87,11 +88,7 @@
                 <div class="rounded-xl bg-slate-50 p-4 text-center">
 
                     <p class="text-xl font-bold text-slate-900">
-                        @if ($user->followers()->count() > 0)
-                            {{ $user->followers()->count() }}
-                        @else
-                            0
-                        @endif
+                        {{ $user->followers_count }}
                       
                     </p>
 
@@ -132,6 +129,10 @@
 
             </div>
         @endforelse
+
+        <div class="mt-4">
+            {{ $posts->links() }}
+        </div>
 
     </div>
 

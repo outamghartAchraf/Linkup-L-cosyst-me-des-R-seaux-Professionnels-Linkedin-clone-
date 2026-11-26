@@ -7,6 +7,7 @@
              @auth
                  @if (auth()->user()->avatar_url)
                      <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
+                         loading="lazy" decoding="async"
                          class="h-9 w-9 shrink-0 rounded-full object-cover border border-slate-200 shadow-xs">
                  @else
                      <div

@@ -36,7 +36,8 @@
                 {{-- Avatar --}}
                 @if (auth()->user()->avatar_url)
                     <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
-                        class="h-10 w-10 rounded-full object-cover border border-slate-200">
+                        class="h-10 w-10 rounded-full object-cover border border-slate-200"
+                        loading="lazy" decoding="async">
                 @else
                     <div
                         class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 font-semibold text-xs text-blue-700">
@@ -62,7 +63,8 @@
                             : asset('storage/' . $post->image);
                     @endphp
                     <img src="{{ $imageSrc }}" alt="Post image"
-                        class="max-h-64 rounded-xl border border-slate-200" onerror="this.style.display='none'">
+                        class="max-h-64 rounded-xl border border-slate-200"
+                        loading="lazy" decoding="async" onerror="this.style.display='none'">
                 </div>
             @endif
 
