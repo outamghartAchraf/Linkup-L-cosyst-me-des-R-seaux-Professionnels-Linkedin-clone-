@@ -14,10 +14,10 @@
         {{-- Avatar --}}
         <div class="-mt-16">
 
-            @if($user->image_url)
+            @if($user->avatar_url)
 
                 <img
-                    src="{{ asset('storage/'.$user->image_url) }}"
+                    src="{{ $user->avatar_url }}"
                     alt="{{ $user->name }}"
                     class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg">
 

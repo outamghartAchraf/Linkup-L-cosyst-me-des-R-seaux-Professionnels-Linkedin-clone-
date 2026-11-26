@@ -135,10 +135,10 @@
                     @click="open = !open"
                     class="flex items-center gap-2 rounded-xl px-2 py-1.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all">
 
-                    @if(auth()->user()->image_url)
+                    @if(auth()->user()->avatar_url)
 
                         <img
-                            src="{{ asset('storage/' . auth()->user()->image_url) }}"
+                            src="{{ auth()->user()->avatar_url }}"
                             alt="{{ auth()->user()->name }}"
                             class="h-9 w-9 rounded-full object-cover">
 

@@ -6,10 +6,10 @@
         @auth
 
 
-@if(auth()->user()->image_url)
+@if(auth()->user()->avatar_url)
 
 <img
-    src="{{ asset('storage/'.auth()->user()->image_url) }}"
+    src="{{ auth()->user()->avatar_url }}"
     class="h-16 w-16 rounded-full object-cover border-4 border-white">
 
 @else

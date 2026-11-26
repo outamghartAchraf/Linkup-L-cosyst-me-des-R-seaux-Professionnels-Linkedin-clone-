@@ -32,13 +32,36 @@
         Profile Photo
     </label>
 
-    @if($user->image_url)
+    @if($user->avatar_url)
 
         <img
-            src="{{ asset('storage/'.$user->image_url) }}"
+            src="{{ $user->avatar_url }}"
             class="w-24 h-24 rounded-full object-cover mb-3 border">
 
+    @else
+
+        <div class="mb-3 flex h-24 w-24 items-center justify-center rounded-full bg-blue-100 text-2xl font-bold text-blue-700">
+            {{ strtoupper(substr($user->name, 0, 2)) }}
+        </div>
+
     @endif
+
+    <label class="mb-2 mt-4 block text-xs font-medium text-slate-600">
+        Profile image URL
+    </label>
+
+    <input
+        type="url"
+        name="image_url"
+        value="{{ old('image_url', preg_match('/^https?:\/\//i', $user->image_url ?? '') ? $user->image_url : '') }}"
+        placeholder="https://example.com/profile.jpg"
+        class="mb-3 block w-full rounded-xl border border-slate-300 p-3 text-xs">
+
+    @error('image_url')
+        <p class="text-red-500 text-xs mt-1">
+            {{ $message }}
+        </p>
+    @enderror
 
     <input
         type="file"

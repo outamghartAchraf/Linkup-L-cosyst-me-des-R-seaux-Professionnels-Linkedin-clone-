@@ -15,8 +15,8 @@
                 <div class="flex items-end gap-4">
 
                     <div class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-blue-100 text-3xl font-bold text-blue-700 shadow">
-                        @if ($user->image_url)
-                            <img src="{{ asset('storage/' . $user->image_url) }}"
+                        @if ($user->avatar_url)
+                            <img src="{{ $user->avatar_url }}"
                                 class="w-32 h-32 rounded-full object-cover border-4 border-white shadow">
                         @else
                             <div class="flex h-32 w-32 items-center justify-center rounded-full bg-blue-100 text-3xl font-bold text-blue-700 border-4 border-white">

@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -50,6 +51,31 @@ class User extends Authenticatable
         ];
     }
 
+    public function getAvatarUrlAttribute(): ?string
+    {
+        $image = $this->image_url;
+
+        if (! is_string($image) || $image === '') {
+            return null;
+        }
+
+        if (
+            str_starts_with($image, 'data:image/')
+            || preg_match('/^https?:\/\//i', $image) === 1
+        ) {
+            return $image;
+        }
+
+        if (
+            Storage::disk('public')->exists($image)
+            && is_file(public_path('storage/'.$image))
+        ) {
+            return asset('storage/'.$image);
+        }
+
+        return null;
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -65,7 +91,6 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-
     public function following()
     {
         return $this->belongsToMany(
@@ -80,7 +105,6 @@ class User extends Authenticatable
 
         );
     }
-
 
     public function followers()
     {

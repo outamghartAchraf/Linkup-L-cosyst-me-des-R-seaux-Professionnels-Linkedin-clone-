@@ -5,8 +5,8 @@
 
          <div class="flex items-start gap-3">
              @auth
-                 @if (auth()->user()->image_url)
-                     <img src="{{ Storage::url(auth()->user()->image_url) }}" alt="{{ auth()->user()->name }}"
+                 @if (auth()->user()->avatar_url)
+                     <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
                          class="h-9 w-9 shrink-0 rounded-full object-cover border border-slate-200 shadow-xs">
                  @else
                      <div

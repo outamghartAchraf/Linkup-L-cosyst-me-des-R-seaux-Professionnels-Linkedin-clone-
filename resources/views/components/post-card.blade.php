@@ -34,10 +34,10 @@
         <div
             class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100/70 font-semibold text-sm text-blue-700 ring-2 ring-blue-50">
 
-            @if ($post->user->image_url)
+            @if ($post->user->avatar_url)
                 <a href="{{ route('users.show', $post->user) }}">
 
-                    <img src="{{ asset('storage/' . $post->user->image_url) }}"
+                    <img src="{{ $post->user->avatar_url }}"
                         class="h-11 w-11 rounded-full object-cover">
 
                 </a>
@@ -353,8 +353,8 @@
                 <div class="mb-4 flex gap-3">
 
                     {{-- Avatar --}}
-                    @if ($comment->user->image_url)
-                        <img src="{{ asset('storage/' . $comment->user->image_url) }}"
+                    @if ($comment->user->avatar_url)
+                        <img src="{{ $comment->user->avatar_url }}"
                             class="h-8 w-8 rounded-full object-cover">
                     @else
                         <div
@@ -429,8 +429,8 @@
             @csrf
 
             {{-- Current User Avatar --}}
-            @if (auth()->user()->image_url)
-                <img src="{{ asset('storage/' . auth()->user()->image_url) }}"
+            @if (auth()->user()->avatar_url)
+                <img src="{{ auth()->user()->avatar_url }}"
                     class="h-8 w-8 rounded-full object-cover">
             @else
                 <div

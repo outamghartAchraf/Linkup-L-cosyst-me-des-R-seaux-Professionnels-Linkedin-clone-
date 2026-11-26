@@ -34,8 +34,8 @@
             <div class="flex items-start gap-3">
 
                 {{-- Avatar --}}
-                @if (auth()->user()->image_url)
-                    <img src="{{ asset('storage/' . auth()->user()->image_url) }}" alt="{{ auth()->user()->name }}"
+                @if (auth()->user()->avatar_url)
+                    <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
                         class="h-10 w-10 rounded-full object-cover border border-slate-200">
                 @else
                     <div

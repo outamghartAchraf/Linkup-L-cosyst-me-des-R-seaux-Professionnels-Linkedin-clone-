@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -53,9 +52,9 @@ class UserController extends Controller
     public function logout()
     {
         Auth::logout();
+
         return redirect()->route('login');
     }
-
 
     public function profile()
     {
@@ -75,36 +74,24 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-
-    public function update(Request $request)
+    public function update(UpdateProfileRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'headline' => 'nullable|max:255',
-            'company' => 'nullable|max:255',
-
-            'image' => [
-                'nullable',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:2048'
-            ]
-        ]);
-
-        $user = auth()->user();
+        $validated = $request->validated();
+        $user = $request->user();
+        unset($validated['image']);
 
         if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageContents = $image->getContent();
 
-            if ($user->image_url) {
-
-                Storage::disk('public')->delete($user->image_url);
+            if ($imageContents === false) {
+                throw new \RuntimeException('Unable to read the uploaded profile image.');
             }
 
-            $validated['image_url'] = $request->file('image')
-                ->store('profiles', 'public');
+            $validated['image_url'] = "data:{$image->getMimeType()};base64,".base64_encode($imageContents);
+        } elseif (blank($validated['image_url'] ?? null)) {
+            unset($validated['image_url']);
         }
-
-        unset($validated['image']);
 
         $user->update($validated);
 
