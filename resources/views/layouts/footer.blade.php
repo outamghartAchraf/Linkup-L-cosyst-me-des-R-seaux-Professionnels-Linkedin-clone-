@@ -1,10 +1,4 @@
-<footer class="px-2 text-[10px] font-medium leading-relaxed text-slate-400">
-    <div class="flex flex-wrap gap-x-2 gap-y-0.5">
-        <a href="#" class="hover:underline hover:text-slate-500">Conditions</a>
-        <span>·</span>
-        <a href="#" class="hover:underline hover:text-slate-500">Confidentialité</a>
-        <span>·</span>
-        <a href="#" class="hover:underline hover:text-slate-500">Aide</a>
-    </div>
-    <p class="mt-1">© 2026 LinkUp Clone · Brief Semaine 1</p>
+<footer class="mx-auto w-full max-w-6xl px-4 pb-6 text-center text-xs text-slate-400">
+    <p>LinkUp · A professional space to share ideas and grow your network.</p>
+    <p class="mt-1">&copy; {{ now()->year }} LinkUp</p>
 </footer>

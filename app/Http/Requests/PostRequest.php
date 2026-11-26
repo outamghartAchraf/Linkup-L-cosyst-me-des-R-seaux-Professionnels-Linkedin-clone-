@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class PostRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class PostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
     /**
@@ -23,14 +24,18 @@ class PostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'required|string|max:255',
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
-            'video' => [
-                'nullable',
-                'file',
-                'mimes:mp4,webm,ogg,mov',
-                'max:10240',
-            ],
+            'content' => ['required_without_all:image,video', 'nullable', 'string', 'max:5000'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
+            'video' => ['nullable', 'file', 'mimes:mp4,webm', 'max:51200'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            if ($this->hasFile('image') && $this->hasFile('video')) {
+                $validator->errors()->add('image', 'Choose either an image or a video, not both.');
+            }
+        });
     }
 }

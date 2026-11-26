@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\PostController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\RepostController;
 use App\Http\Controllers\SavedPostController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
 
@@ -24,12 +24,10 @@ Route::middleware('guest')->group(function () {
         ->name('login.store');
 });
 
-
+Route::get('/', [PostController::class, 'index'])
+    ->name('posts.index');
 
 Route::middleware('auth')->group(function () {
-
-    Route::get('/', [PostController::class, 'index'])
-        ->name('posts.index');
 
     Route::post('/logout', [UserController::class, 'logout'])
         ->name('logout');
@@ -78,10 +76,10 @@ Route::middleware('auth')->group(function () {
         ->name('posts.pin');
 
     Route::post('/posts/{post}/save', [SavedPostController::class, 'store'])
-    ->name('posts.save');
+        ->name('posts.save');
 
     Route::delete('/posts/{post}/unsave', [SavedPostController::class, 'destroy'])
-    ->name('posts.unsave');
+        ->name('posts.unsave');
 
     Route::get('/saved-items', [SavedPostController::class, 'index']
     )->name('saved-posts.index');

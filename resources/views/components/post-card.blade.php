@@ -199,15 +199,19 @@
                 ? $displayPost->image
                 : asset('storage/' . $displayPost->image);
         @endphp
-        <img src="{{ $imageSrc }}" class="mb-4 w-full rounded-xl object-cover"
+        <img src="{{ $imageSrc }}" alt="Post image" class="mb-4 w-full rounded-xl object-cover"
             loading="lazy" decoding="async" onerror="this.style.display='none'">
     @endif
 
     @if ($displayPost->video)
-        <video controls class="mb-4 w-full rounded-xl">
-
-            <source src="{{ asset('storage/' . $displayPost->video) }}" type="video/mp4">
-
+        @php
+            $videoType = strtolower(pathinfo($displayPost->video, PATHINFO_EXTENSION)) === 'webm'
+                ? 'video/webm'
+                : 'video/mp4';
+        @endphp
+        <video controls playsinline preload="metadata" class="mb-4 w-full rounded-xl bg-slate-950">
+            <source src="{{ asset('storage/' . $displayPost->video) }}" type="{{ $videoType }}">
+            Your browser does not support video playback.
         </video>
     @endif
 

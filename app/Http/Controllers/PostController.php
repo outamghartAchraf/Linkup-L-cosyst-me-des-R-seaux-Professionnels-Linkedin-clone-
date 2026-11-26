@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
-use App\Services\ImageDataUriService;
 use App\Services\PostCardState;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -15,6 +14,10 @@ class PostController extends Controller
 
     public function index(PostCardState $postCardState)
     {
+        if (! auth()->check()) {
+            return view('landing');
+        }
+
         $user = auth()->user();
         $posts = Post::query()
             ->withCardData()
@@ -29,18 +32,31 @@ class PostController extends Controller
         ]);
     }
 
-    public function store(StorePostRequest $request, ImageDataUriService $imageDataUriService)
+    public function store(StorePostRequest $request)
     {
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $imageDataUriService->encode($request->file('image'), 1080, 78);
+            $path = $request->file('image')->store('posts/images', 'public');
+
+            if ($path === false) {
+                return back()->withErrors(['image' => 'The image could not be uploaded.'])->withInput();
+            }
+
+            $validated['image'] = $path;
         }
 
         if ($request->hasFile('video')) {
-            $validated['video'] = $request->file('video')->store('posts/videos', 'public');
+            $path = $request->file('video')->store('posts/videos', 'public');
+
+            if ($path === false) {
+                return back()->withErrors(['video' => 'The video could not be uploaded.'])->withInput();
+            }
+
+            $validated['video'] = $path;
         }
 
+        $validated['content'] ??= '';
         $validated['user_id'] = auth()->id();
         Post::create($validated);
 
@@ -55,14 +71,31 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
-    public function update(UpdatePostRequest $request, Post $post, ImageDataUriService $imageDataUriService)
+    public function update(UpdatePostRequest $request, Post $post)
     {
         $this->authorize('update', $post);
 
         $validated = $request->validated();
+        $validated['content'] ??= $post->content;
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $imageDataUriService->encode($request->file('image'), 1080, 78);
+            $path = $request->file('image')->store('posts/images', 'public');
+
+            if ($path === false) {
+                return back()->withErrors(['image' => 'The image could not be uploaded.'])->withInput();
+            }
+
+            $validated['image'] = $path;
+            $validated['video'] = null;
+        } elseif ($request->hasFile('video')) {
+            $path = $request->file('video')->store('posts/videos', 'public');
+
+            if ($path === false) {
+                return back()->withErrors(['video' => 'The video could not be uploaded.'])->withInput();
+            }
+
+            $validated['video'] = $path;
+            $validated['image'] = null;
         }
 
         $post->update($validated);

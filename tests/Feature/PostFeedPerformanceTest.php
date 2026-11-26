@@ -35,7 +35,10 @@ class PostFeedPerformanceTest extends TestCase
 
         $this->actingAs($viewer)
             ->get(route('posts.index'))
-            ->assertOk();
+            ->assertOk()
+            ->assertDontSee('Jobs')
+            ->assertDontSee('Messages')
+            ->assertDontSee('Alerts');
 
         $this->assertLessThan(20, count($connection->getQueryLog()));
 
