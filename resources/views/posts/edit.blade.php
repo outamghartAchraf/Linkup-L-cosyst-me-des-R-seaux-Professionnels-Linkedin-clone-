@@ -56,8 +56,13 @@
 
             @if ($post->image)
                 <div class="mt-3">
-                    <img src="{{ asset('storage/' . $post->image) }}" alt="Post image"
-                        class="max-h-64 rounded-xl border border-slate-200">
+                    @php
+                        $imageSrc = preg_match('/^(?:data:image\/|https?:\/\/)/i', $post->image)
+                            ? $post->image
+                            : asset('storage/' . $post->image);
+                    @endphp
+                    <img src="{{ $imageSrc }}" alt="Post image"
+                        class="max-h-64 rounded-xl border border-slate-200" onerror="this.style.display='none'">
                 </div>
             @endif
 

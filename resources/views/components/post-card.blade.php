@@ -194,7 +194,13 @@
     @endphp
 
     @if ($displayPost->image)
-        <img src="{{ asset('storage/' . $displayPost->image) }}" class="mb-4 w-full rounded-xl object-cover">
+        @php
+            $imageSrc = preg_match('/^(?:data:image\/|https?:\/\/)/i', $displayPost->image)
+                ? $displayPost->image
+                : asset('storage/' . $displayPost->image);
+        @endphp
+        <img src="{{ $imageSrc }}" class="mb-4 w-full rounded-xl object-cover"
+            onerror="this.style.display='none'">
     @endif
 
     @if ($displayPost->video)
