@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Services\ImageDataUriService;
 use App\Services\PostCardState;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -32,18 +33,12 @@ class PostController extends Controller
         ]);
     }
 
-    public function store(StorePostRequest $request)
+    public function store(StorePostRequest $request, ImageDataUriService $imageDataUriService)
     {
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('posts/images', 'public');
-
-            if ($path === false) {
-                return back()->withErrors(['image' => 'The image could not be uploaded.'])->withInput();
-            }
-
-            $validated['image'] = $path;
+            $validated['image'] = $imageDataUriService->encode($request->file('image'), 1080, 78);
         }
 
         if ($request->hasFile('video')) {

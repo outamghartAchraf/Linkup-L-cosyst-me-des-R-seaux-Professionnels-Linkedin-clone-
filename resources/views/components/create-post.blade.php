@@ -117,7 +117,7 @@
                 clearPreview();
                 error.textContent = !supported
                     ? `Choose a supported ${type} file.`
-                    : `The ${type} must be no larger than ${type === 'image' ? '5 MB' : '50 MB'}.`;
+                    : `The ${type} must be no larger than ${type === 'image' ? '8 MB' : '50 MB'}.`;
                 error.classList.remove('hidden');
                 preview.classList.remove('hidden');
                 return;
@@ -136,7 +136,7 @@
             updatePublishState();
         };
 
-        imageInput.addEventListener('change', () => displayFile(imageInput, 'image', 5 * 1024 * 1024));
+        imageInput.addEventListener('change', () => displayFile(imageInput, 'image', 8 * 1024 * 1024));
         videoInput.addEventListener('change', () => displayFile(videoInput, 'video', 50 * 1024 * 1024));
         content.addEventListener('input', updatePublishState);
         remove.addEventListener('click', clearPreview);

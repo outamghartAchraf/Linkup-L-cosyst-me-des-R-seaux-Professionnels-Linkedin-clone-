@@ -13,26 +13,25 @@ class PostImageUploadTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_uploaded_post_image_is_saved_to_public_storage_and_rendered_in_the_feed(): void
+    public function test_uploaded_post_image_only_is_encoded_and_rendered_in_the_feed(): void
     {
-        Storage::fake('public');
         $user = User::factory()->create();
 
         $this->actingAs($user)
             ->post(route('posts.store'), [
-                'content' => 'A post with an image',
-                'image' => UploadedFile::fake()->image('post.webp'),
+                'content' => '',
+                'image' => UploadedFile::fake()->image('post.webp')->size(8192),
             ])
             ->assertRedirect(route('posts.index'))
             ->assertSessionHas('success');
 
         $post = Post::query()->sole();
-        $this->assertStringStartsWith('posts/images/', $post->image);
-        Storage::disk('public')->assertExists($post->image);
+        $this->assertSame('', $post->content);
+        $this->assertMatchesRegularExpression('#^data:image/(?:webp|jpeg);base64,#', $post->image);
 
         $this->get(route('posts.index'))
             ->assertOk()
-            ->assertSee('storage/'.$post->image, false);
+            ->assertSee($post->image, false);
     }
 
     public function test_updated_post_image_is_saved_to_public_storage(): void
@@ -94,7 +93,7 @@ class PostImageUploadTest extends TestCase
             ->from(route('posts.index'))
             ->post(route('posts.store'), [
                 'content' => 'An oversized image',
-                'image' => UploadedFile::fake()->image('large.png')->size(5121),
+                'image' => UploadedFile::fake()->image('large.png')->size(8193),
             ])
             ->assertRedirect(route('posts.index'))
             ->assertSessionHasErrors('image');

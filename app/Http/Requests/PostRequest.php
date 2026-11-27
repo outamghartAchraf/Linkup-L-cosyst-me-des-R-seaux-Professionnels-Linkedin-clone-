@@ -25,7 +25,7 @@ class PostRequest extends FormRequest
     {
         return [
             'content' => ['required_without_all:image,video', 'nullable', 'string', 'max:5000'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:8192'],
             'video' => ['nullable', 'file', 'mimes:mp4,webm', 'max:51200'],
         ];
     }
